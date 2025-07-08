@@ -9,6 +9,7 @@ import Footer from '@/components/Footer';
 import ResumeUploader from '@/components/ResumeUploader';
 import AnalysisResults from '@/components/AnalysisResults';
 import LearningPaths from '@/components/LearningPaths';
+import Pricing from '@/components/Pricing';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 
@@ -428,6 +429,8 @@ const Index = () => {
         <Stats />
 
         <Testimonials />
+
+        <Pricing />
 
         <CTA />
       </main>

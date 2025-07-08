@@ -93,9 +93,23 @@ const Footer = () => {
             <ul className="space-y-3">
               {['Features', 'Pricing', 'Testimonials', 'For Teams', 'For Enterprise'].map((item) => (
                 <li key={item}>
-                  <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors duration-300">
-                    {item}
-                  </a>
+                  {item === 'Pricing' ? (
+                    <a
+                      href="#pricing"
+                      onClick={e => {
+                        e.preventDefault();
+                        const section = document.getElementById('pricing');
+                        section?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      className="text-sm text-gray-400 hover:text-white transition-colors duration-300 cursor-pointer"
+                    >
+                      {item}
+                    </a>
+                  ) : (
+                    <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors duration-300">
+                      {item}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
