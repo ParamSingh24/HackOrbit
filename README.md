@@ -1,5 +1,7 @@
 # 🚀 HackOrbit Hackathon Submission – MITS University
 
+PPT - https://1drv.ms/p/c/af6e9ba4a0c5e71a/EVLLBM0g3-NFshFF9cCM4i8BTMpQo-tl8QAR1EPt__9I1A?e=tn9D2e
+
 ### 👥 Team Name: Tech Heros  
 ### 🏫 University: MITS University  
 ### 🏆 Hackathon: HackOrbit
