@@ -49,7 +49,7 @@ const mockCoursesData = [
   {
     id: "course1",
     title: "Advanced TypeScript Masterclass",
-    provider: "Frontend Masters",
+    provider: "Online Academy",
     duration: "15 hours",
     level: "Intermediate" as const,
     description: "Learn advanced TypeScript features including generics, utility types, and complex type definitions.",
@@ -59,7 +59,7 @@ const mockCoursesData = [
   {
     id: "course2",
     title: "Testing React Applications",
-    provider: "Kent C. Dodds",
+    provider: "Expert Instructor",
     duration: "12 hours",
     level: "Intermediate" as const,
     description: "Comprehensive guide to testing React applications with Jest, React Testing Library, and Cypress.",
@@ -69,7 +69,7 @@ const mockCoursesData = [
   {
     id: "course3",
     title: "GraphQL API Development",
-    provider: "Apollo",
+    provider: "Online Academy",
     duration: "20 hours",
     level: "Advanced" as const,
     description: "Build, query, and maintain GraphQL APIs for modern web applications.",
@@ -291,14 +291,6 @@ const Index = () => {
   return (
     <>
       <Header />
-      {/* Updated landing intro */}
-      <div className="bg-gradient-to-br from-gray-900 to-black text-white py-8 border-b border-[#008080]">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-3xl md:text-4xl font-extrabold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-[#00FFFF] to-[#00CCCC]">MITS CareerBoost</h1>
-          <p className="text-lg md:text-xl mb-4">Made for the HackOrbit hackathon, MITS CareerBoost is designed to help students and job seekers supercharge their careers with AI-powered tools, resume analysis, and personalized learning paths.</p>
-          <p className="text-base text-gray-300 max-w-2xl mx-auto">Our mission is to empower everyone to become the best-fit candidate for their dream job by providing actionable insights, upskilling recommendations, and a seamless job application experience—all in one place.</p>
-        </div>
-      </div>
       {/* Hero with see how it works handler */}
       <Hero onSeeHowItWorks={handleSeeHowItWorks} />
       {/* Story Modal Overlay */}
@@ -360,30 +352,7 @@ const Index = () => {
         <div id="upload" className="py-16 bg-gradient-to-br from-gray-900 to-black border-t border-[#008080]">
           <div className="container mx-auto px-4">
             {!showAnalysis ? (
-              <>
-                <div className="mb-8 glass-box p-6">
-                  <label htmlFor="resume-url" className="block mb-2 font-medium text-white">Or analyze a resume from a URL:</label>
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    <input
-                      id="resume-url"
-                      type="url"
-                      value={resumeUrl}
-                      onChange={e => setResumeUrl(e.target.value)}
-                      placeholder="Paste resume file URL (PDF, DOCX, etc.)"
-                      className="flex-1 border border-gray-700 rounded px-3 py-2 bg-transparent text-white placeholder-gray-500 focus:outline-none focus:border-[#00FFFF] focus:shadow-[0_0_0_3px_rgba(0,255,255,0.5)] transition-all duration-200"
-                      disabled={isUploading}
-                    />
-                    <Button
-                      onClick={handleAnalyzeUrl}
-                      disabled={!resumeUrl || isUploading}
-                      className="glassy-button text-white px-4 py-2 rounded hover:text-white"
-                    >
-                      Analyze URL
-                    </Button>
-                  </div>
-                </div>
-                <ResumeUploader onAnalyze={handleAnalyze} onAnalyzeText={handleAnalyzeText} />
-              </>
+              <ResumeUploader onAnalyze={handleAnalyze} onAnalyzeText={handleAnalyzeText} analyzeUrl={resumeUrl} setAnalyzeUrl={setResumeUrl} onAnalyzeUrl={handleAnalyzeUrl} isUploading={isUploading} />
             ) : (
               <div className="space-y-16" ref={outreachSectionRef}>
                 {analysisData ? (

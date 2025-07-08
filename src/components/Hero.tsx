@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Upload, BarChart } from 'lucide-react';
 import { useChatbot } from "@/hooks/useChatbot";
+import Onboarding from './Onboarding';
+import SignUpModal from './SignUpModal';
 
 const Hero = () => {
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showSignUp, setShowSignUp] = useState(false);
   const scrollToUpload = () => {
     const uploadSection = document.getElementById('upload');
     uploadSection?.scrollIntoView({ behavior: 'smooth' });
@@ -137,7 +141,7 @@ const Hero = () => {
                 <Button
                   size="lg"
                   className="glassy-button text-white rounded-md"
-                  onClick={scrollToUpload}
+                  onClick={() => setShowSignUp(true)}
                 >
                   Get started for free
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -147,6 +151,7 @@ const Hero = () => {
                   variant="outline"
                   size="lg"
                   className="glassy-button text-[#00FFFF] rounded-md hover:text-white"
+                  onClick={() => setShowOnboarding(true)}
                 >
                   See how it works
                 </Button>
@@ -177,7 +182,7 @@ const Hero = () => {
                 <span className="text-sm text-gray-300 ml-2">Resume Analysis</span>
               </div>
 
-              <div className="space-y-4 max-h-72 overflow-y-auto pr-2">
+              <div className="space-y-4 pr-2">
                 {messages.length === 0 && (
                   <>
                     <div className="flex items-start space-x-3">
@@ -241,6 +246,15 @@ const Hero = () => {
           </div>
         </div>
       </section>
+      {/* Onboarding modal placeholder */}
+      {showOnboarding && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
+          <div className="bg-transparent w-full max-w-2xl mx-4">
+            <Onboarding onClose={() => setShowOnboarding(false)} />
+          </div>
+        </div>
+      )}
+      {showSignUp && <SignUpModal onClose={() => setShowSignUp(false)} />}
     </>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
-import { MessageSquare, X, Send } from 'lucide-react'; // Using MessageSquare for chatbot icon
+import { MessageSquare, X, Send, Volume2, Mic, MicOff, VolumeX } from 'lucide-react'; // Using MessageSquare for chatbot icon
 import ReactMarkdown from 'react-markdown'; // Import react-markdown
 import { useChatbot } from "@/hooks/useChatbot";
 
@@ -25,6 +25,10 @@ const Chatbot: React.FC = () => {
   } = useChatbot();
   const [open, setOpen] = useState(false); // Controls the visual open/close state for transitions
   const [modalVisible, setModalVisible] = useState(false); // Controls actual rendering after transition
+  const [listening, setListening] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
+  const recognitionRef = useRef<any>(null);
+  const synthRef = useRef(window.speechSynthesis);
 
   // Effect to handle modal visibility for smooth transitions
   useEffect(() => {
@@ -61,6 +65,53 @@ const Chatbot: React.FC = () => {
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') sendMessage();
   };
+
+  // Voice input: Speech-to-text
+  const startListening = () => {
+    if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+      alert('Speech recognition is not supported in this browser.');
+      return;
+    }
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setInput(prev => prev ? prev + ' ' + transcript : transcript);
+    };
+    recognition.onend = () => setListening(false);
+    recognition.onerror = () => setListening(false);
+    recognitionRef.current = recognition;
+    setListening(true);
+    recognition.start();
+  };
+  const stopListening = () => {
+    recognitionRef.current?.stop();
+    setListening(false);
+  };
+
+  // Voice output: Text-to-speech
+  const speak = (text: string) => {
+    if (!('speechSynthesis' in window)) {
+      alert('Speech synthesis is not supported in this browser.');
+      return;
+    }
+    stopSpeaking();
+    const utter = new window.SpeechSynthesisUtterance(text);
+    utter.onend = () => setSpeaking(false);
+    utter.onerror = () => setSpeaking(false);
+    setSpeaking(true);
+    synthRef.current.speak(utter);
+  };
+  const stopSpeaking = () => {
+    synthRef.current.cancel();
+    setSpeaking(false);
+  };
+
+  // Find the latest assistant message
+  const latestAssistantMsg = messages.slice().reverse().find(m => m.role === 'assistant')?.content;
 
   return (
     <>
@@ -220,6 +271,28 @@ const Chatbot: React.FC = () => {
                     ${msg.role === 'user' ? 'user-message' : 'assistant-message'}`}
                 >
                   <ReactMarkdown>{msg.content}</ReactMarkdown> {/* Render markdown content */}
+                  {/* Voice output button for assistant messages */}
+                  {msg.role === 'assistant' && idx === messages.length - 1 && (
+                    <div className="flex gap-2 mt-2 justify-end">
+                      {!speaking ? (
+                        <button
+                          className="text-cyan-400 hover:text-cyan-200"
+                          title="Read aloud"
+                          onClick={() => speak(msg.content)}
+                        >
+                          <Volume2 size={20} />
+                        </button>
+                      ) : (
+                        <button
+                          className="text-red-400 hover:text-red-200"
+                          title="Stop reading"
+                          onClick={stopSpeaking}
+                        >
+                          <VolumeX size={20} />
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -253,6 +326,25 @@ const Chatbot: React.FC = () => {
             >
               <Send size={20} />
             </Button>
+            {/* Voice input button */}
+            {!listening ? (
+              <button
+                className="ml-2 text-cyan-400 hover:text-cyan-200 bg-transparent border-none outline-none"
+                title="Start voice input"
+                onClick={startListening}
+                disabled={loading}
+              >
+                <Mic size={22} />
+              </button>
+            ) : (
+              <button
+                className="ml-2 text-red-400 hover:text-red-200 bg-transparent border-none outline-none"
+                title="Stop voice input"
+                onClick={stopListening}
+              >
+                <MicOff size={22} />
+              </button>
+            )}
           </div>
           {error && <div className="text-red-400 text-sm mt-2 text-center">{error}</div>}
         </div>

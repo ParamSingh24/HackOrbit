@@ -1,8 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import SignUpModal from './SignUpModal';
+import ProfileModal from './ProfileModal';
+import { useNavigate } from 'react-router-dom';
 
 const Footer = () => {
   const sectionRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false); // State to control animation
+  const { user } = useAuth();
+  const [showSignUp, setShowSignUp] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -29,7 +37,7 @@ const Footer = () => {
   }, []);
 
   return (
-    <footer ref={sectionRef} className="bg-gradient-to-br from-gray-900 to-black text-white py-12 overflow-hidden border-t border-[#008080]"> {/* Added border-t with a dark cyan color */}
+    <footer id="footer" ref={sectionRef} className="bg-gradient-to-br from-gray-900 to-black text-white py-12 overflow-hidden border-t border-[#008080]"> {/* Added border-t with a dark cyan color */}
       <style jsx>{`
         @keyframes slideUp {
           from {
@@ -63,7 +71,7 @@ const Footer = () => {
         }
       `}</style>
       <div className="container mx-auto px-4">
-        <div className={`grid grid-cols-1 md:grid-cols-4 gap-8 ${isVisible ? 'animate-slide-up' : 'opacity-0'}`}>
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="col-span-1 md:col-span-2">
             <div className="mb-4">
               <div className="font-bold">
@@ -127,17 +135,36 @@ const Footer = () => {
               ))}
             </ul>
           </div>
+          <div className="mt-4 md:mt-0">
+            {user ? (
+              <button
+                className="w-10 h-10 rounded-full bg-cyan-900 flex items-center justify-center text-lg text-cyan-300 border-2 border-cyan-400 hover:shadow-lg transition-all"
+                onClick={() => navigate('/profile')}
+                title={user.email}
+              >
+                {user.email?.[0]?.toUpperCase() || 'U'}
+              </button>
+            ) : (
+              <button
+                className="glassy-button px-6 py-2 rounded text-white font-semibold border border-cyan-400 hover:bg-[#00FFFF] hover:text-black transition-all duration-200"
+                onClick={() => setShowSignUp(true)}
+              >
+                Get Started
+              </button>
+            )}
+          </div>
         </div>
 
         <div className={`border-t border-gray-700 mt-12 pt-8 flex flex-col md:flex-row justify-between text-gray-500 ${isVisible ? 'animate-slide-up' : 'opacity-0'}`} style={{ animationDelay: '0.3s' }}>
           <p className="text-sm">
-            &copy; {new Date().getFullYear()} MITS CareerBoost. All rights reserved.
+            &copy; {new Date().getFullYear()} CareerBoost. All rights reserved.
           </p>
           <p className="text-sm mt-2 md:mt-0">
             Hackorbit MITS CareerBoost.
           </p>
         </div>
       </div>
+      {showSignUp && <SignUpModal onClose={() => setShowSignUp(false)} />}
     </footer>
   );
 };

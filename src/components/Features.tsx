@@ -10,60 +10,44 @@ const Features = ({ onEmailOutreachLearnMore, onCareerCoachingLearnMore }) => {
     {
       icon: <FileText className="h-8 w-8 text-[#00FFFF]" />,
       title: 'Resume Optimization',
+      slug: 'resume-optimization',
       description: 'AI-powered resume analysis and optimization to match job descriptions and increase interview chances.',
       buttonText: 'Learn More',
     },
     {
       icon: <BarChart2 className="h-8 w-8 text-[#00FFFF]" />,
       title: 'Job Trend Analysis',
+      slug: 'job-trend-analysis',
       description: 'Track industry trends, in-demand skills, and salary insights to make informed career decisions.',
       buttonText: 'Learn More',
     },
     {
       icon: <ClipboardList className="h-8 w-8 text-[#00FFFF]" />,
       title: 'Application Tracking',
+      slug: 'application-tracking',
       description: 'Track all your job applications, interviews, and follow-ups in one personalized dashboard. Stay organized and never miss an opportunity!',
-      buttonText: 'Open Application Dashboard',
-      isCustom: true,
-      customContent: null, // Placeholder for future dashboard/modal
+      buttonText: 'Learn More',
     },
     {
       icon: <Clock className="h-8 w-8 text-[#00FFFF]" />,
       title: 'Skill Gap Analysis',
+      slug: 'skill-gap-analysis',
       description: 'Identify missing skills and get recommendations for courses to become more competitive. Enter your current skills and the company you\'re interested in, then click below to see your personalized skill gap analysis!',
-      buttonText: 'Show Skill Gap Analysis',
-      isCustom: true,
-      customContent: (
-        <>
-          <input type="text" placeholder="Your current skills (comma separated)" className="flex-1 px-3 py-2 rounded bg-gray-900 border border-gray-700 text-white focus:border-[#00FFFF] focus:ring-2 focus:ring-[#00FFFF] mb-2" />
-          <select className="px-3 py-2 rounded bg-gray-900 border border-gray-700 text-white focus:border-[#00FFFF] focus:ring-2 focus:ring-[#00FFFF] mb-2">
-            <option>Google</option>
-            <option>Amazon</option>
-            <option>Microsoft</option>
-            <option>Facebook</option>
-          </select>
-        </>
-      ),
+      buttonText: 'Learn More',
     },
     {
       icon: <Mail className="h-8 w-8 text-[#00FFFF]" />,
       title: 'Email Outreach',
+      slug: 'email-outreach',
       description: 'Instantly send your resume to recruiters using your own Gmail account. Upload your resume and click send—Gmail will open with a personalized message. Remember to attach your resume before sending!',
-      buttonText: 'Send Resume to Recruiter',
-      isCustom: true,
-      customContent: (
-        <input type="file" accept=".pdf,.doc,.docx,.rtf,.txt" className="mb-4 text-white mx-auto" />
-      ),
-      onClick: onEmailOutreachLearnMore,
+      buttonText: 'Learn More',
     },
     {
       icon: <MessageSquare className="h-8 w-8 text-[#00FFFF]" />,
       title: 'AI Career Coaching',
+      slug: 'ai-career-coaching',
       description: 'Get personalized advice, interview tips, and guided feedback to improve your professional presence. Click below to chat with our AI Career Coach and get instant answers to your career questions!',
-      buttonText: 'Open AI Career Coach',
-      isCustom: true,
-      customContent: null, // Placeholder for chatbot/modal
-      onClick: onCareerCoachingLearnMore,
+      buttonText: 'Learn More',
     },
   ];
 
@@ -96,7 +80,7 @@ const Features = ({ onEmailOutreachLearnMore, onCareerCoachingLearnMore }) => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-16 bg-gradient-to-br from-gray-900 to-black text-white overflow-hidden border-t border-[#008080]">
+    <section id="features" ref={sectionRef} className="py-16 bg-gradient-to-br from-gray-900 to-black text-white overflow-hidden border-t border-[#008080]">
       <style jsx>{`
         @keyframes slideUp {
           from {
@@ -159,27 +143,25 @@ const Features = ({ onEmailOutreachLearnMore, onCareerCoachingLearnMore }) => {
           {features.map((feature, index) => (
             <div
               key={index}
-              className={`glass-box flex flex-col justify-between items-center text-center p-6 rounded-xl shadow-2xl border border-gray-700 border-opacity-60
-                        min-h-[420px] h-full w-full
+              className={`glass-box flex flex-col justify-between items-center text-center p-4 rounded-xl shadow-2xl border border-gray-700 border-opacity-60
+                        min-h-[300px] h-full w-full cursor-pointer
                         transform transition-all duration-500 ease-in-out hover:scale-105 hover:shadow-[0_0_40px_rgba(0,255,255,0.4)] hover:rotate-1 hover:border-[#00FFFF]
                         ${isVisible ? 'animate-slide-up' : 'opacity-0'}`}
               style={{ animationDelay: `${0.3 + index * 0.1}s` }}
+              onClick={() => navigate(`/feature/${feature.slug}`)}
             >
               <div className="mb-4 p-3 bg-gray-800 bg-opacity-60 rounded-lg w-fit shadow-inner border border-gray-700 border-opacity-50 mx-auto">
                 {feature.icon}
               </div>
               <h3 className="text-2xl font-semibold mb-3 text-[#00FFFF]">{feature.title}</h3>
               <p className="text-white mb-6 flex-grow">{feature.description}</p>
-              {feature.isCustom && feature.customContent && (
-                <div className="w-full flex flex-col items-center">{feature.customContent}</div>
-              )}
               <div className="mt-auto w-full flex justify-center">
                 <Button
                   variant="outline"
                   className="w-fit px-6 py-2
                            bg-gray-900 bg-opacity-30 backdrop-filter backdrop-blur-md text-white border border-[#00FFFF] border-opacity-60 rounded-md shadow-lg
                            hover:bg-[#00FFFF] hover:shadow-[0_0_20px_rgba(0,255,255,0.6)] hover:border-[#00FFFF] transform hover:scale-105 transition-all duration-300 ease-in-out"
-                  onClick={feature.onClick}
+                  tabIndex={-1}
                 >
                   {feature.buttonText}
                 </Button>

@@ -4,19 +4,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MITS CareerBoost - Resume Analysis & Skills Enhancement</title>
+  <title>CareerBoost - Resume Analysis & Skills Enhancement</title>
   <meta name="description"
-    content="Upload your resume and let MITS CareerBoost AI analyze your skills, identify gaps, and suggest personalized learning paths to help you land your dream job." />
-  <meta name="author" content="Kalpathon" />
+    content="Upload your resume and let CareerBoost AI analyze your skills, identify gaps, and suggest personalized learning paths to help you land your dream job." />
+  <meta name="author" content="CareerBoost" />
 
-  <meta property="og:title" content="MITS CareerBoost - Resume Analysis & Skills Enhancement" />
+  <meta property="og:title" content="CareerBoost - Resume Analysis & Skills Enhancement" />
   <meta property="og:description"
-    content="Upload your resume and let MITS CareerBoost AI analyze your skills, identify gaps, and suggest personalized learning paths to help you land your dream job." />
+    content="Upload your resume and let CareerBoost AI analyze your skills, identify gaps, and suggest personalized learning paths to help you land your dream job." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="/public/favicon.ico" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <!-- <meta name="twitter:site" content="@lovable_dev" /> -->
   <meta name="twitter:image" content="/public/favicon.ico" />
 
 
@@ -30,6 +29,34 @@
   <div id="root"></div>
   <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
   <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyAG3CitDeRrjoMDUZCXO0ppym8T1GrJ_GA",
+      authDomain: "mits-careerboost.firebaseapp.com",
+      projectId: "mits-careerboost",
+      storageBucket: "mits-careerboost.firebasestorage.app",
+      messagingSenderId: "620529797748",
+      appId: "1:620529797748:web:dd4ac290be44ffbf43df21",
+      measurementId: "G-1RCL0037GE"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+
+    // Placeholder for Firebase Auth (replace with real logic as needed)
+    window.startFirebaseAuth = function() {
+      alert('Firebase Auth would start here!');
+    };
+  </script>
   <script type="module" src="/src/main.tsx"></script>
 </body>
 

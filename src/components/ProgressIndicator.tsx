@@ -13,8 +13,6 @@ type ProgressIndicatorProps = {
 };
 
 // Custom component to display multi-step progress
-// Created by Akhil Jyot for the Kalpathon 2025
-// Inspired by design patterns from Stripe and Linear
 const ProgressIndicator = ({ steps, currentStep }: ProgressIndicatorProps) => {
   // Helper to determine if we should show the connector line
   const shouldShowConnector = (index: number) => index < steps.length - 1;

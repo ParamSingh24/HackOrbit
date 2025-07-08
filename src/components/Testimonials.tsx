@@ -36,21 +36,21 @@ const Testimonials = () => {
   const testimonialsData = {
     'Recent Graduate': {
       avatarColor: 'bg-blue-600',
-      quote: "As a recent CS graduate with no industry experience, I was getting zero callbacks. MITS CareerBoost helped optimize my resume and taught me how to highlight my projects effectively. Within 3 weeks, I landed 5 interviews and got my dream job offer at Google!",
+      quote: "As a recent CS graduate with no industry experience, I was getting zero callbacks. CareerBoost helped optimize my resume and taught me how to highlight my projects effectively. Within 3 weeks, I landed 5 interviews and got my dream job offer!",
       author: "Alex Chen",
-      role: "Software Engineer at Google",
+      role: "Software Engineer",
     },
     'Career Changer': {
       avatarColor: 'bg-purple-600',
-      quote: "Transitioning from marketing to tech seemed impossible. MITS CareerBoost provided invaluable AI coaching and skill gap analysis, guiding me to relevant courses. I successfully pivoted into a Data Analyst role, something I never thought possible!",
+      quote: "Transitioning from marketing to tech seemed impossible. CareerBoost provided invaluable AI coaching and skill gap analysis, guiding me to relevant courses. I successfully pivoted into a Data Analyst role, something I never thought possible!",
       author: "Maria Rodriguez",
-      role: "Data Analyst at TechCorp",
+      role: "Data Analyst",
     },
     'Executive': {
       avatarColor: 'bg-green-600',
-      quote: "Even at an executive level, staying competitive is key. The job trend analysis and personalized email outreach features of MITS CareerBoost streamlined my search for leadership roles. It's an indispensable tool for career advancement.",
+      quote: "Even at an executive level, staying competitive is key. The job trend analysis and personalized email outreach features of CareerBoost streamlined my search for leadership roles. It's an indispensable tool for career advancement.",
       author: "David Lee",
-      role: "VP of Product at Innovate Inc.",
+      role: "VP of Product",
     },
   };
 
@@ -109,7 +109,7 @@ const Testimonials = () => {
           Trusted by job seekers at every career stage
         </h2>
         <p className={`text-lg text-white text-center mb-12 max-w-3xl mx-auto ${isVisible ? 'animate-slide-up' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
-          See how MITS CareerBoost has helped professionals from different backgrounds achieve their career goals.
+          See how CareerBoost has helped professionals from different backgrounds achieve their career goals.
         </p>
 
         <div className={`max-w-3xl mx-auto mt-10 ${isVisible ? 'animate-slide-up' : 'opacity-0'}`} style={{ animationDelay: '0.4s' }}>
