@@ -1,6 +1,12 @@
-# 🚀 CareerBoost – AI-Powered Resume Analysis & Skills Enhancement Platform
+# 🚀 HackOrbit Hackathon Submission – MITS University
 
-> _"Empower your career journey with instant resume analysis, skill gap detection, and personalized learning paths using AI."_
+PPT - https://1drv.ms/p/c/af6e9ba4a0c5e71a/EVLLBM0g3-NFshFF9cCM4i8BTMpQo-tl8QAR1EPt__9I1A?e=tn9D2e
+
+### 👥 Team Name: Tech Heros  
+### 🏫 Hackathon BY : Digital Learning Group, MITS University  
+### 🏆 Hackathon: HackOrbit
+
+> _"Our project empowers students and job seekers to analyze their resumes, discover missing skills, and receive personalized learning paths using AI."_
 
 ---
 
