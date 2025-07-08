@@ -61,7 +61,7 @@ const Footer = () => {
             &copy; {new Date().getFullYear()} MITS CareerBoost. All rights reserved.
           </p>
           <p className="text-sm text-gray-500 mt-2 md:mt-0">
-            Designed & coded by Akhil Jyot • Kalpathon 2025
+            Hackorbit MITS CareerBoost.
           </p>
         </div>
       </div>

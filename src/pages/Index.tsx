@@ -10,6 +10,7 @@ import ResumeUploader from '@/components/ResumeUploader';
 import AnalysisResults from '@/components/AnalysisResults';
 import LearningPaths from '@/components/LearningPaths';
 import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
 
 // Mock data for analysis results
 const mockAnalysisData = {
@@ -217,37 +218,87 @@ const Index = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen pt-16">
+    <div className="flex flex-col min-h-screen pt-16 bg-gradient-to-br from-gray-900 to-black text-white">
+      <style jsx>{`
+        /* Glass Box Styles */
+        .glass-box {
+          background: rgba(0, 0, 0, 0.3);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 0.5rem;
+          box-shadow: 0 8px 32px 0 rgba(0, 251, 255, 0.2);
+          transition: all 0.3s ease-in-out;
+        }
+
+        .glass-box:hover {
+          background: rgba(0, 0, 0, 0.4);
+          box-shadow: 0 12px 48px 0 rgba(0, 251, 255, 0.4);
+          transform: translateY(-2px);
+        }
+
+        /* Glass Bubble Styles (for inner elements like AI messages) */
+        .glass-bubble {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            box-shadow: 0 2px 8px rgba(0, 251, 255, 0.1);
+        }
+        .glass-bubble:hover {
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 12px rgba(0, 251, 255, 0.2);
+        }
+
+        /* Glassy Button Styles */
+        .glassy-button {
+          background: rgba(0, 0, 0, 0.2);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          box-shadow: 0 4px 15px rgba(0, 251, 255, 0.1);
+          transition: all 0.3s ease-in-out;
+          color: white; /* Ensure text is white by default */
+        }
+
+        .glassy-button:hover {
+          background: rgba(0, 0, 0, 0.4);
+          border-color: rgba(0, 251, 255, 0.4);
+          box-shadow: 0 6px 25px rgba(0, 251, 255, 0.3);
+          transform: translateY(-2px);
+        }
+      `}</style>
       <Header />
-      
-      <main>
+
+      <main className="flex-grow">
         <Hero />
-        
+
         <Features />
-        
-        <div id="upload" className="py-16 bg-white">
+
+        <div id="upload" className="py-16 bg-gradient-to-br from-gray-900 to-black">
           <div className="container mx-auto px-4">
             {!showAnalysis ? (
               <>
-                <div className="mb-8">
-                  <label htmlFor="resume-url" className="block mb-2 font-medium">Or analyze a resume from a URL:</label>
-                  <div className="flex gap-2">
+                <div className="mb-8 glass-box p-6">
+                  <label htmlFor="resume-url" className="block mb-2 font-medium text-white">Or analyze a resume from a URL:</label>
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <input
                       id="resume-url"
                       type="url"
                       value={resumeUrl}
                       onChange={e => setResumeUrl(e.target.value)}
                       placeholder="Paste resume file URL (PDF, DOCX, etc.)"
-                      className="flex-1 border border-gray-300 rounded px-3 py-2"
+                      className="flex-1 border border-gray-700 rounded px-3 py-2 bg-transparent text-white placeholder-gray-500 focus:outline-none focus:border-[#00FFFF] focus:shadow-[0_0_0_3px_rgba(0,255,255,0.5)] transition-all duration-200"
                       disabled={isUploading}
                     />
-                    <button
+                    <Button
                       onClick={handleAnalyzeUrl}
                       disabled={!resumeUrl || isUploading}
-                      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                      className="glassy-button text-white px-4 py-2 rounded hover:text-white"
                     >
                       Analyze URL
-                    </button>
+                    </Button>
                   </div>
                 </div>
                 <ResumeUploader onAnalyze={handleAnalyze} onAnalyzeText={handleAnalyzeText} />
@@ -256,41 +307,43 @@ const Index = () => {
               <div className="space-y-16">
                 {analysisData ? (
                   <div className="space-y-8">
-                    <div className="bg-white rounded-lg shadow p-6">
-                      <h2 className="text-2xl font-bold mb-4">Resume Parsing Result</h2>
-                      <pre className="bg-gray-100 p-4 rounded text-sm overflow-x-auto">{JSON.stringify(analysisData.parsed || analysisData.raw, null, 2)}</pre>
+                    <div className="glass-box rounded-lg shadow p-6">
+                      <h2 className="text-2xl font-bold mb-4 text-[#00FFFF]">Resume Parsing Result</h2>
+                      <pre className="glass-bubble p-4 rounded text-sm overflow-x-auto text-white">{JSON.stringify(analysisData.parsed || analysisData.raw, null, 2)}</pre>
                     </div>
                     {analysisData.ats_feedback && (
-                      <div className="bg-white rounded-lg shadow p-6">
-                        <h2 className="text-2xl font-bold mb-4">ATS Compatibility Feedback</h2>
-                        <div className="bg-gray-100 p-4 rounded text-sm whitespace-pre-line">{analysisData.ats_feedback}</div>
+                      <div className="glass-box rounded-lg shadow p-6">
+                        <h2 className="text-2xl font-bold mb-4 text-[#00FFFF]">ATS Compatibility Feedback</h2>
+                        <div className="glass-bubble p-4 rounded text-sm whitespace-pre-line text-white">{analysisData.ats_feedback}</div>
                       </div>
                     )}
                     {analysisData.suggestions && (
-                      <div className="bg-white rounded-lg shadow p-6">
-                        <h2 className="text-2xl font-bold mb-4">Improvement Suggestions</h2>
-                        <div className="bg-gray-100 p-4 rounded text-sm whitespace-pre-line">{analysisData.suggestions}</div>
+                      <div className="glass-box rounded-lg shadow p-6">
+                        <h2 className="text-2xl font-bold mb-4 text-[#00FFFF]">Improvement Suggestions</h2>
+                        <div className="glass-bubble p-4 rounded text-sm whitespace-pre-line text-white">{analysisData.suggestions}</div>
                       </div>
                     )}
                   </div>
                 ) : (
-                  <div>Loading analysis...</div>
+                  <div className="text-white">Loading analysis...</div>
                 )}
+                {/* Ensure LearningPaths is styled consistently or is a separate component that will be styled */}
                 <LearningPaths courses={mockCoursesData} />
               </div>
             )}
-            {(isUploading || progress) && <div className="text-center mt-6 text-blue-600">{progress || 'Analyzing your resume, please wait...'}</div>}
-            {error && <div className="text-center mt-6 text-red-600">{error}</div>}
+            {(isUploading || progress) && <div className="text-center mt-6 text-[#00FFFF]">{progress || 'Analyzing your resume, please wait...'}</div>}
+            {error && <div className="text-center mt-6 text-red-500">{error}</div>}
           </div>
         </div>
-        
+
+        {/* These components would also need to be updated to match the theme */}
         <Stats />
-        
+
         <Testimonials />
-        
+
         <CTA />
       </main>
-      
+
       <Footer />
     </div>
   );
