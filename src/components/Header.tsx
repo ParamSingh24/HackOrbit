@@ -25,7 +25,7 @@ const Header = () => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             {/* Navigation links with light text, increased hover scale, and no underline */}
-            <a href="#" className="text-sm font-medium text-blue-100 hover:text-white transition-all duration-300 ease-in-out transform hover:scale-110">Features</a>
+            <a href="/features" className="text-sm font-medium text-blue-100 hover:text-white transition-all duration-300 ease-in-out transform hover:scale-110">Features</a>
             <a href="#" className="text-sm font-medium text-blue-100 hover:text-white transition-all duration-300 ease-in-out transform hover:scale-110">Pricing</a>
             <a href="#" className="text-sm font-medium text-blue-100 hover:text-white transition-all duration-300 ease-in-out transform hover:scale-110">Resources</a>
             {/* Adjusted spacing */}
@@ -61,7 +61,7 @@ const Header = () => {
         >
           <nav className="flex flex-col space-y-4 px-4">
             {/* Mobile navigation links with increased hover scale and no underline */}
-            <a href="#" className="text-sm font-medium text-blue-100 px-2 py-2 rounded-md hover:bg-blue-700 hover:text-white transition-colors duration-200 transform hover:scale-105">Features</a>
+            <a href="/features" className="text-sm font-medium text-blue-100 px-2 py-2 rounded-md hover:bg-blue-700 hover:text-white transition-colors duration-200 transform hover:scale-105">Features</a>
             <a href="#" className="text-sm font-medium text-blue-100 px-2 py-2 rounded-md hover:bg-blue-700 hover:text-white transition-colors duration-200 transform hover:scale-105">Pricing</a>
             <a href="#" className="text-sm font-medium text-blue-100 px-2 py-2 rounded-md hover:bg-blue-700 hover:text-white transition-colors duration-200 transform hover:scale-105">Resources</a>
             <a href="#" className="text-sm font-medium text-blue-100 px-2 py-2 rounded-md hover:bg-blue-700 hover:text-white transition-colors duration-200 transform hover:scale-105">Log in</a>

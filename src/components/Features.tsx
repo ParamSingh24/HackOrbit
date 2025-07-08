@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { FileText, BarChart2, Users, Mail, ClipboardList, Clock } from 'lucide-react';
+import { FileText, BarChart2, Users, Mail, ClipboardList, Clock, MessageSquare, Plus, Edit, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import Chart from './ui/chart'; // If you have a chart component, otherwise will use inline
+import { useNavigate } from 'react-router-dom';
 
-const Features = () => {
+const Features = ({ onEmailOutreachLearnMore, onCareerCoachingLearnMore }) => {
   const features = [
     {
       icon: <FileText className="h-8 w-8 text-[#00FFFF]" />, // Specific cyan color
@@ -44,6 +47,7 @@ const Features = () => {
 
   const sectionRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false); // State to control animation
+  const navigate = useNavigate();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -148,6 +152,11 @@ const Features = () => {
                 className="w-fit justify-center mt-auto px-6 py-2
                            bg-gray-900 bg-opacity-30 backdrop-filter backdrop-blur-md text-white border border-[#00FFFF] border-opacity-60 rounded-md shadow-lg
                            hover:bg-[#00FFFF] hover:shadow-[0_0_20px_rgba(0,255,255,0.6)] hover:border-[#00FFFF] transform hover:scale-105 transition-all duration-300 ease-in-out"
+                onClick={
+                  feature.title === 'Email Outreach' && onEmailOutreachLearnMore ? onEmailOutreachLearnMore :
+                  feature.title === 'AI Career Coaching' && onCareerCoachingLearnMore ? onCareerCoachingLearnMore :
+                  undefined
+                }
               >
                 {feature.buttonText}
               </Button>
@@ -155,17 +164,412 @@ const Features = () => {
           ))}
         </div>
 
+        {/* Dedicated Email Outreach Section */}
+        <EmailOutreachSection />
+        {/* End Dedicated Email Outreach Section */}
+
+        {/* Industry Trends Section */}
+        <IndustryTrendsSection />
+        {/* End Industry Trends Section */}
+
+        {/* AI Career Coaching Section */}
+        <AICareerCoachingSection onOpenChatbot={onCareerCoachingLearnMore} />
+        {/* End AI Career Coaching Section */}
+
+        {/* Application Tracker Section */}
+        <ApplicationTrackerSection />
+        {/* End Application Tracker Section */}
+
+        {/* Skill Gap Analysis Section */}
+        <SkillGapAnalysisSection />
+        {/* End Skill Gap Analysis Section */}
+
         <div className={`mt-16 text-center ${isVisible ? 'animate-slide-up' : 'opacity-0'}`} style={{ animationDelay: '0.7s' }}>
           <Button
             variant="link"
             className="text-[#00FFFF] font-medium text-lg
                        hover:text-white hover:underline underline-offset-4 transition-colors duration-300 ease-in-out"
+            onClick={() => navigate('/features')}
           >
             Explore all features →
           </Button>
         </div>
       </div>
     </section>
+  );
+};
+
+const EmailOutreachSection = () => {
+  const [file, setFile] = useState<File | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+    }
+  };
+
+  const handleSend = () => {
+    if (!file) {
+      toast.error('Please upload your resume first.');
+      return;
+    }
+    // Compose Gmail URL
+    const recruiterEmail = 'raghuvanshiranapratapsingh@gmail.com';
+    const subject = encodeURIComponent('Resume Submission from CareerBoost');
+    const body = encodeURIComponent(
+      `Dear Recruiter,%0D%0A%0D%0APlease find my resume attached for your consideration. I believe my skills and experience are a great fit for your requirements.%0D%0A%0D%0AThank you for your time!%0D%0A%0D%0ABest regards,%0D%0A[Your Name]%0D%0A%0D%0A(P.S. Please ensure your resume is attached before sending.)`
+    );
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${recruiterEmail}&su=${subject}&body=${body}`;
+    toast.info('Gmail will open in a new tab. Please attach your resume before sending.');
+    window.open(gmailUrl, '_blank');
+  };
+
+  return (
+    <div className={`mt-20 flex flex-col items-center justify-center glass-box p-10 rounded-2xl shadow-2xl border border-[#00FFFF] border-opacity-60 max-w-2xl mx-auto`}>
+      <div className="flex items-center mb-4">
+        <Mail className="h-10 w-10 text-[#00FFFF] mr-3" />
+        <h3 className="text-3xl font-bold text-[#00FFFF]">Email Outreach</h3>
+      </div>
+      <p className="text-lg text-white mb-6 text-center max-w-xl">
+        Instantly send your resume to recruiters using your own Gmail account. Upload your resume and click send&mdash;Gmail will open with a personalized message. <span className="text-[#00FFFF] font-semibold">Remember to attach your resume before sending!</span>
+      </p>
+      <input
+        type="file"
+        accept=".pdf,.doc,.docx,.rtf,.txt"
+        onChange={handleFileChange}
+        className="mb-4 text-white"
+      />
+      <Button
+        onClick={handleSend}
+        disabled={!file}
+        className="glassy-button text-white px-8 py-3 rounded-lg text-lg font-semibold shadow-lg border border-[#00FFFF] border-opacity-60
+          hover:bg-[#00FFFF] hover:text-black hover:shadow-[0_0_20px_rgba(0,255,255,0.6)] hover:border-[#00FFFF] transform hover:scale-105 transition-all duration-300 ease-in-out"
+      >
+        <Mail className="inline-block mr-2 w-5 h-5 align-middle" />
+        Send Resume to Recruiter
+      </Button>
+    </div>
+  );
+};
+
+const IndustryTrendsSection = () => {
+  const [showGraph, setShowGraph] = useState(false);
+  // Mock data for industry trends
+  const data = [
+    { label: 'AI/ML', value: 85 },
+    { label: 'Cloud', value: 75 },
+    { label: 'Cybersecurity', value: 65 },
+    { label: 'Web Dev', value: 90 },
+    { label: 'Data Science', value: 80 },
+    { label: 'Blockchain', value: 55 },
+  ];
+
+  return (
+    <div className={`mt-20 flex flex-col items-center justify-center glass-box p-10 rounded-2xl shadow-2xl border border-[#00FFFF] border-opacity-60 max-w-2xl mx-auto`}>
+      <div className="flex items-center mb-4">
+        <BarChart2 className="h-10 w-10 text-[#00FFFF] mr-3" />
+        <h3 className="text-3xl font-bold text-[#00FFFF]">Industry Trends & Insights</h3>
+      </div>
+      <p className="text-lg text-white mb-6 text-center max-w-xl">
+        Track industry trends, discover in-demand skills, and get salary insights to make informed career decisions. Click below to view the latest industry statistics.
+      </p>
+      <Button
+        onClick={() => setShowGraph(true)}
+        disabled={showGraph}
+        className="glassy-button text-white px-8 py-3 rounded-lg text-lg font-semibold shadow-lg border border-[#00FFFF] border-opacity-60
+          hover:bg-[#00FFFF] hover:text-black hover:shadow-[0_0_20px_rgba(0,255,255,0.6)] hover:border-[#00FFFF] transform hover:scale-105 transition-all duration-300 ease-in-out"
+      >
+        <BarChart2 className="inline-block mr-2 w-5 h-5 align-middle" />
+        Show Industry Statistics
+      </Button>
+      {showGraph && (
+        <div className="w-full mt-8">
+          {/* Use Chart component if available, else render inline bar chart */}
+          <div className="flex flex-col gap-4">
+            {data.map((item) => (
+              <div key={item.label} className="flex items-center">
+                <span className="w-32 text-white text-sm font-medium">{item.label}</span>
+                <div className="flex-1 bg-gray-800 rounded h-5 mx-2">
+                  <div
+                    className="h-5 rounded bg-gradient-to-r from-[#00FFFF] to-[#00CCCC] shadow"
+                    style={{ width: `${item.value}%` }}
+                  ></div>
+                </div>
+                <span className="text-[#00FFFF] font-bold w-10 text-right">{item.value}%</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const AICareerCoachingSection = ({ onOpenChatbot }) => {
+  return (
+    <div className={`mt-20 flex flex-col items-center justify-center glass-box p-10 rounded-2xl shadow-2xl border border-[#00FFFF] border-opacity-60 max-w-2xl mx-auto`}>
+      <div className="flex items-center mb-4">
+        <MessageSquare className="h-10 w-10 text-[#00FFFF] mr-3" />
+        <h3 className="text-3xl font-bold text-[#00FFFF]">AI Career Coaching</h3>
+      </div>
+      <p className="text-lg text-white mb-6 text-center max-w-xl">
+        Get personalized advice, interview tips, and guided feedback to improve your professional presence. Click below to chat with our AI Career Coach and get instant answers to your career questions!
+      </p>
+      <Button
+        onClick={onOpenChatbot}
+        className="glassy-button text-white px-8 py-3 rounded-lg text-lg font-semibold shadow-lg border border-[#00FFFF] border-opacity-60
+          hover:bg-[#00FFFF] hover:text-black hover:shadow-[0_0_20px_rgba(0,255,255,0.6)] hover:border-[#00FFFF] transform hover:scale-105 transition-all duration-300 ease-in-out"
+      >
+        <MessageSquare className="inline-block mr-2 w-5 h-5 align-middle" />
+        Open AI Career Coach
+      </Button>
+    </div>
+  );
+};
+
+const ApplicationTrackerSection = () => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [applications, setApplications] = useState([
+    { id: 1, company: 'Google', position: 'Frontend Engineer', status: 'Interview Scheduled' },
+    { id: 2, company: 'Amazon', position: 'SDE 1', status: 'Applied' },
+    { id: 3, company: 'Microsoft', position: 'UI/UX Designer', status: 'Offer Received' },
+  ]);
+  const [editing, setEditing] = useState(null);
+  const [form, setForm] = useState({ company: '', position: '', status: '' });
+  const [search, setSearch] = useState('');
+
+  const openAdd = () => {
+    setEditing(null);
+    setForm({ company: '', position: '', status: '' });
+    setModalOpen(true);
+  };
+  const openEdit = (app) => {
+    setEditing(app.id);
+    setForm({ company: app.company, position: app.position, status: app.status });
+    setModalOpen(true);
+  };
+  const handleDelete = (id) => setApplications(applications.filter(a => a.id !== id));
+  const handleSave = () => {
+    if (!form.company || !form.position || !form.status) return;
+    if (editing) {
+      setApplications(applications.map(a => a.id === editing ? { ...a, ...form } : a));
+    } else {
+      setApplications([...applications, { id: Date.now(), ...form }]);
+    }
+    setModalOpen(false);
+  };
+
+  // Filtering logic
+  const filteredApps = applications.filter(app =>
+    app.company.toLowerCase().includes(search.toLowerCase()) ||
+    app.position.toLowerCase().includes(search.toLowerCase()) ||
+    app.status.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className={`mt-20 flex flex-col items-center justify-center glass-box p-10 rounded-2xl shadow-2xl border border-[#00FFFF] border-opacity-60 max-w-3xl mx-auto`}>
+      <div className="flex items-center mb-4">
+        <ClipboardList className="h-10 w-10 text-[#00FFFF] mr-3" />
+        <h3 className="text-3xl font-bold text-[#00FFFF]">Application Tracker</h3>
+      </div>
+      <p className="text-lg text-white mb-6 text-center max-w-xl">
+        Track all your job applications, interviews, and follow-ups in one personalized dashboard. Stay organized and never miss an opportunity!
+      </p>
+      <Button
+        onClick={() => setModalOpen(true)}
+        className="glassy-button text-white px-8 py-3 rounded-lg text-lg font-semibold shadow-lg border border-[#00FFFF] border-opacity-60
+          hover:bg-[#00FFFF] hover:text-black hover:shadow-[0_0_20px_rgba(0,255,255,0.6)] hover:border-[#00FFFF] transform hover:scale-105 transition-all duration-300 ease-in-out"
+      >
+        <ClipboardList className="inline-block mr-2 w-5 h-5 align-middle" />
+        Open Application Dashboard
+      </Button>
+      {modalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+          <div className="glass-box p-8 rounded-xl max-w-2xl w-full relative">
+            <button className="absolute top-4 right-4 text-white text-2xl" onClick={() => setModalOpen(false)}>&times;</button>
+            <h4 className="text-2xl font-bold mb-4 text-[#00FFFF]">Job Applications</h4>
+            {/* Search/filter input */}
+            <input
+              type="text"
+              placeholder="Search by company, position, or status..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="mb-4 w-full px-3 py-2 rounded bg-gray-900 border border-gray-700 text-white focus:border-[#00FFFF] focus:ring-2 focus:ring-[#00FFFF]"
+            />
+            <table className="w-full mb-4 text-white">
+              <thead>
+                <tr className="border-b border-[#00FFFF]">
+                  <th className="py-2 text-left">Company</th>
+                  <th className="py-2 text-left">Position</th>
+                  <th className="py-2 text-left">Status</th>
+                  <th className="py-2 text-left">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredApps.map(app => (
+                  <tr key={app.id} className="border-b border-gray-700">
+                    <td className="py-2">{app.company}</td>
+                    <td className="py-2">{app.position}</td>
+                    <td className="py-2">{app.status}</td>
+                    <td className="py-2 flex gap-2">
+                      <button onClick={() => openEdit(app)} className="text-[#00FFFF] hover:text-white"><Edit size={18} /></button>
+                      <button onClick={() => handleDelete(app.id)} className="text-red-400 hover:text-white"><Trash2 size={18} /></button>
+                    </td>
+                  </tr>
+                ))}
+                {filteredApps.length === 0 && (
+                  <tr><td colSpan={4} className="py-4 text-center text-gray-400">No applications found.</td></tr>
+                )}
+              </tbody>
+            </table>
+            <button
+              onClick={openAdd}
+              className="mb-4 flex items-center px-4 py-2 bg-[#00FFFF] text-black rounded hover:bg-[#00CCCC] transition"
+            >
+              <Plus className="mr-2 w-4 h-4" /> Add Application
+            </button>
+            <div className="flex gap-4">
+              <input
+                type="text"
+                placeholder="Company"
+                value={form.company}
+                onChange={e => setForm(f => ({ ...f, company: e.target.value }))}
+                className="flex-1 px-3 py-2 rounded bg-gray-900 border border-gray-700 text-white focus:border-[#00FFFF] focus:ring-2 focus:ring-[#00FFFF]"
+              />
+              <input
+                type="text"
+                placeholder="Position"
+                value={form.position}
+                onChange={e => setForm(f => ({ ...f, position: e.target.value }))}
+                className="flex-1 px-3 py-2 rounded bg-gray-900 border border-gray-700 text-white focus:border-[#00FFFF] focus:ring-2 focus:ring-[#00FFFF]"
+              />
+              <input
+                type="text"
+                placeholder="Status"
+                value={form.status}
+                onChange={e => setForm(f => ({ ...f, status: e.target.value }))}
+                className="flex-1 px-3 py-2 rounded bg-gray-900 border border-gray-700 text-white focus:border-[#00FFFF] focus:ring-2 focus:ring-[#00FFFF]"
+              />
+              <button
+                onClick={handleSave}
+                className="px-4 py-2 bg-[#00FFFF] text-black rounded hover:bg-[#00CCCC] transition font-semibold"
+              >
+                {editing ? 'Update' : 'Add'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const SkillGapAnalysisSection = () => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [userSkills, setUserSkills] = useState('');
+  const [company, setCompany] = useState('Google');
+  const [missingSkills, setMissingSkills] = useState<string[]>([]);
+  const [showResults, setShowResults] = useState(false);
+
+  // Mock company required skills
+  const companySkills: Record<string, string[]> = {
+    Google: ['React', 'TypeScript', 'GraphQL', 'Automated Testing', 'CI/CD', 'Cloud Deployment'],
+    Amazon: ['Java', 'AWS', 'Microservices', 'CI/CD', 'System Design'],
+    Microsoft: ['C#', '.NET', 'Azure', 'Unit Testing', 'DevOps'],
+    Facebook: ['React', 'Hack', 'GraphQL', 'Automated Testing', 'Distributed Systems'],
+  };
+  const recommendedCourses = [
+    { name: 'GraphQL Fundamentals', provider: 'Coursera', link: '#' },
+    { name: 'Automated Testing with Jest', provider: 'Udemy', link: '#' },
+    { name: 'CI/CD Pipelines', provider: 'Pluralsight', link: '#' },
+    { name: 'Cloud Deployment Basics', provider: 'edX', link: '#' },
+    { name: 'AWS for Developers', provider: 'Coursera', link: '#' },
+    { name: 'System Design Primer', provider: 'Udemy', link: '#' },
+    { name: 'Azure Fundamentals', provider: 'edX', link: '#' },
+    { name: 'DevOps Essentials', provider: 'Pluralsight', link: '#' },
+    { name: 'Distributed Systems', provider: 'Coursera', link: '#' },
+  ];
+
+  const handleAnalyze = () => {
+    const userSkillArr = userSkills.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+    const required = (companySkills[company] || []).map(s => s.toLowerCase());
+    const missing = required.filter(skill => !userSkillArr.includes(skill));
+    setMissingSkills(missing);
+    setShowResults(true);
+    setModalOpen(true);
+  };
+
+  return (
+    <div className={`mt-20 flex flex-col items-center justify-center glass-box p-10 rounded-2xl shadow-2xl border border-[#00FFFF] border-opacity-60 max-w-3xl mx-auto`}>
+      <div className="flex items-center mb-4">
+        <Clock className="h-10 w-10 text-[#00FFFF] mr-3" />
+        <h3 className="text-3xl font-bold text-[#00FFFF]">Skill Gap Analysis</h3>
+      </div>
+      <p className="text-lg text-white mb-6 text-center max-w-xl">
+        Identify missing skills and get recommendations for courses to become more competitive. Enter your current skills and the company you're interested in, then click below to see your personalized skill gap analysis!
+      </p>
+      <div className="flex flex-col md:flex-row gap-4 w-full max-w-2xl mb-4">
+        <input
+          type="text"
+          placeholder="Your current skills (comma separated)"
+          value={userSkills}
+          onChange={e => setUserSkills(e.target.value)}
+          className="flex-1 px-3 py-2 rounded bg-gray-900 border border-gray-700 text-white focus:border-[#00FFFF] focus:ring-2 focus:ring-[#00FFFF]"
+        />
+        <select
+          value={company}
+          onChange={e => setCompany(e.target.value)}
+          className="px-3 py-2 rounded bg-gray-900 border border-gray-700 text-white focus:border-[#00FFFF] focus:ring-2 focus:ring-[#00FFFF]"
+        >
+          {Object.keys(companySkills).map(c => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+      </div>
+      <Button
+        onClick={handleAnalyze}
+        className="glassy-button text-white px-8 py-3 rounded-lg text-lg font-semibold shadow-lg border border-[#00FFFF] border-opacity-60
+          hover:bg-[#00FFFF] hover:text-black hover:shadow-[0_0_20px_rgba(0,255,255,0.6)] hover:border-[#00FFFF] transform hover:scale-105 transition-all duration-300 ease-in-out"
+      >
+        <Clock className="inline-block mr-2 w-5 h-5 align-middle" />
+        Show Skill Gap Analysis
+      </Button>
+      {modalOpen && showResults && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+          <div className="glass-box p-8 rounded-xl max-w-2xl w-full relative">
+            <button className="absolute top-4 right-4 text-white text-2xl" onClick={() => setModalOpen(false)}>&times;</button>
+            <h4 className="text-2xl font-bold mb-4 text-[#00FFFF]">Skill Gap Analysis for {company}</h4>
+            <div className="mb-6">
+              <h5 className="text-lg font-semibold text-[#00CCCC] mb-2">Missing Skills</h5>
+              {missingSkills.length > 0 ? (
+                <ul className="list-disc list-inside text-white">
+                  {missingSkills.map(skill => (
+                    <li key={skill}>{skill.charAt(0).toUpperCase() + skill.slice(1)}</li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="text-green-400">No skill gaps! You match all required skills for {company}.</div>
+              )}
+            </div>
+            <div>
+              <h5 className="text-lg font-semibold text-[#00CCCC] mb-2">Recommended Courses</h5>
+              <ul className="list-disc list-inside text-white">
+                {recommendedCourses
+                  .filter(course => missingSkills.some(skill => course.name.toLowerCase().includes(skill)))
+                  .map(course => (
+                    <li key={course.name}>
+                      <a href={course.link} target="_blank" rel="noopener noreferrer" className="text-[#00FFFF] hover:underline">{course.name}</a> <span className="text-gray-400">({course.provider})</span>
+                    </li>
+                  ))}
+                {missingSkills.length === 0 && (
+                  <li className="text-green-400">No additional courses needed.</li>
+                )}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import Features from '@/components/Features';
@@ -92,6 +92,9 @@ const Index = () => {
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState<string>('');
   const [resumeUrl, setResumeUrl] = useState('');
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [generatedEmail, setGeneratedEmail] = useState('');
+  const outreachSectionRef = useRef<HTMLDivElement>(null);
 
   const handleAnalyze = async (file: File) => {
     setIsUploading(true);
@@ -217,6 +220,65 @@ const Index = () => {
     }
   };
 
+  // Email Outreach logic
+  const handleEmailOutreach = async () => {
+    if (!analysisData) {
+      toast.error('No analysis data available.');
+      return;
+    }
+    setEmailLoading(true);
+    setGeneratedEmail('');
+    try {
+      // Compose prompt for AI email generation
+      const prompt = `You are an expert career assistant. Write a personalized outreach email to a recruiter, highlighting the candidate's most relevant skills and experience for a job opportunity. Use the following resume analysis data:\n\n${JSON.stringify(analysisData, null, 2)}\n\nThe email should be professional, concise, and tailored to impress a recruiter. Include a subject line. Return only the email text.`;
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: MODEL,
+          messages: [
+            { role: 'system', content: 'You are an expert career assistant.' },
+            { role: 'user', content: prompt },
+          ],
+        }),
+      });
+      const data = await res.json();
+      const emailText = data.choices?.[0]?.message?.content || 'Could not generate email.';
+      setGeneratedEmail(emailText);
+      // Extract subject and body
+      let subject = 'Job Opportunity';
+      let body = emailText;
+      const subjectMatch = emailText.match(/^Subject:(.*)$/im);
+      if (subjectMatch) {
+        subject = subjectMatch[1].trim();
+        body = emailText.replace(/^Subject:.*$/im, '').trim();
+      }
+      // Send email via backend
+      const backendRes = await fetch('http://localhost:5000/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ to: 'raghuvanshiranapratapsingh@gmail.com', subject, text: body }),
+      });
+      if (!backendRes.ok) {
+        throw new Error('Backend email send failed');
+      }
+      toast.success('Email sent to recruiter!');
+    } catch (err) {
+      toast.error('Failed to generate or send email.');
+    } finally {
+      setEmailLoading(false);
+    }
+  };
+
+  const handleEmailOutreachLearnMore = () => {
+    if (outreachSectionRef.current) {
+      outreachSectionRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen pt-16 bg-gradient-to-br from-gray-900 to-black text-white">
       <style jsx>{`
@@ -274,7 +336,13 @@ const Index = () => {
       <main className="flex-grow">
         <Hero />
 
-        <Features />
+        <Features
+          onEmailOutreachLearnMore={handleEmailOutreachLearnMore}
+          onCareerCoachingLearnMore={() => {
+            const btn = document.getElementById('chatbot-button');
+            if (btn) btn.click();
+          }}
+        />
 
         <div id="upload" className="py-16 bg-gradient-to-br from-gray-900 to-black border-t border-[#008080]">
           <div className="container mx-auto px-4">
@@ -304,7 +372,7 @@ const Index = () => {
                 <ResumeUploader onAnalyze={handleAnalyze} onAnalyzeText={handleAnalyzeText} />
               </>
             ) : (
-              <div className="space-y-16">
+              <div className="space-y-16" ref={outreachSectionRef}>
                 {analysisData ? (
                   <div className="space-y-8">
                     <div className="glass-box rounded-lg shadow p-6">
@@ -327,7 +395,27 @@ const Index = () => {
                 ) : (
                   <div className="text-white">Loading analysis...</div>
                 )}
-                {/* Ensure LearningPaths is styled consistently or is a separate component that will be styled */}
+                {/* Email Outreach Feature */}
+                <div className="glass-box rounded-lg shadow p-6 mt-8">
+                  <h2 className="text-2xl font-bold mb-4 text-[#00FFFF]">Email Outreach</h2>
+                  <p className="mb-4 text-white">AI-generated personalized emails to recruiters that highlight your relevant skills and experience. The email will be sent to <span className='text-[#00FFFF] font-semibold'>raghuvanshiranapratapsingh@gmail.com</span> when you click send:</p>
+                  <div className="flex flex-col sm:flex-row gap-2 mb-4">
+                    <Button
+                      onClick={handleEmailOutreach}
+                      disabled={emailLoading}
+                      className="glassy-button text-white px-4 py-2 rounded hover:text-white"
+                    >
+                      {emailLoading ? 'Sending...' : 'Send Email'}
+                    </Button>
+                  </div>
+                  {generatedEmail && (
+                    <div className="glass-bubble p-4 rounded text-sm overflow-x-auto text-white mt-4">
+                      <strong>Generated Email:</strong>
+                      <pre className="whitespace-pre-wrap mt-2">{generatedEmail}</pre>
+                    </div>
+                  )}
+                </div>
+                {/* End Email Outreach Feature */}
                 <LearningPaths courses={mockCoursesData} />
               </div>
             )}

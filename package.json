@@ -80,5 +80,18 @@
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1"
-  }
+  },
+  "description": "PPT - https://1drv.ms/p/c/af6e9ba4a0c5e71a/EVLLBM0g3-NFshFF9cCM4i8BTMpQo-tl8QAR1EPt__9I1A?e=tn9D2e",
+  "main": "eslint.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ParamSingh24/HackOrbit.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ParamSingh24/HackOrbit/issues"
+  },
+  "homepage": "https://github.com/ParamSingh24/HackOrbit#readme"
 }

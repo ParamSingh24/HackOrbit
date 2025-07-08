@@ -68,3 +68,35 @@ npm run dev
 ---
 
 ## 🌟 Built with passion for HackOrbit at MITS University
+
+## Backend Email Service
+
+A simple Express backend is provided in the `backend/` folder to send emails via Gmail SMTP.
+
+### Setup
+1. Go to the `backend/` folder:
+   ```sh
+   cd backend
+   ```
+2. Install dependencies:
+   ```sh
+   npm install
+   ```
+3. Create a `.env` file with the following:
+   ```env
+   GMAIL_USER=your_gmail_address@gmail.com
+   GMAIL_PASS=your_gmail_app_password
+   PORT=5000
+   ```
+   - You must use a Gmail App Password (not your regular password). See: https://support.google.com/accounts/answer/185833
+
+4. Start the backend:
+   ```sh
+   npm start
+   ```
+
+### API Endpoint
+- `POST /api/send-email`
+  - Body: `{ to: string, subject: string, text: string }`
+
+---
