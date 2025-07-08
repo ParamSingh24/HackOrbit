@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FileText, BarChart2, Users, Mail, ClipboardList, Clock, MessageSquare, Plus, Edit, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -110,7 +110,7 @@ const Features = ({ onEmailOutreachLearnMore, onCareerCoachingLearnMore }) => {
         .glass-box:hover {
           background: rgba(0, 0, 0, 0.4);
           box-shadow: 0 12px 48px 0 rgba(0, 251, 255, 0.4);
-          transform: translateY(-2px);
+          transform: translateY(-5px) scale(1.03) rotate(1deg); /* Combined transform for hover */
         }
 
         /* Glassy Button Styles */
@@ -131,7 +131,7 @@ const Features = ({ onEmailOutreachLearnMore, onCareerCoachingLearnMore }) => {
           transform: translateY(-2px);
         }
       `}</style>
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 mb-10">
         <h2 className={`text-4xl font-extrabold text-center mb-8 text-transparent bg-clip-text bg-gradient-to-r from-[#00FFFF] to-[#00CCCC] ${isVisible ? 'animate-slide-up' : 'opacity-0'}`}>
           Everything you need to accelerate your career
         </h2>
@@ -144,23 +144,23 @@ const Features = ({ onEmailOutreachLearnMore, onCareerCoachingLearnMore }) => {
             <div
               key={index}
               className={`glass-box flex flex-col justify-between items-center text-center p-4 rounded-xl shadow-2xl border border-gray-700 border-opacity-60
-                        min-h-[300px] h-full w-full cursor-pointer
-                        transform transition-all duration-500 ease-in-out hover:scale-105 hover:shadow-[0_0_40px_rgba(0,255,255,0.4)] hover:rotate-1 hover:border-[#00FFFF]
-                        ${isVisible ? 'animate-slide-up' : 'opacity-0'}`}
+                           min-h-[300px] h-full w-full cursor-pointer
+                           transform transition-all duration-500 ease-in-out hover:shadow-[0_0_40px_rgba(0,255,255,0.4)] hover:border-[#00FFFF]
+                           ${isVisible ? 'animate-slide-up' : 'opacity-0'}`}
               style={{ animationDelay: `${0.3 + index * 0.1}s` }}
               onClick={() => navigate(`/feature/${feature.slug}`)}
             >
-              <div className="mb-4 p-3 bg-gray-800 bg-opacity-60 rounded-lg w-fit shadow-inner border border-gray-700 border-opacity-50 mx-auto">
+              <div className="mt-5 p-3 bg-gray-800 bg-opacity-60 rounded-lg w-fit shadow-inner border border-gray-700 border-opacity-50 mx-auto">
                 {feature.icon}
               </div>
-              <h3 className="text-2xl font-semibold mb-3 text-[#00FFFF]">{feature.title}</h3>
-              <p className="text-white mb-6 flex-grow">{feature.description}</p>
-              <div className="mt-auto w-full flex justify-center">
+              <h3 className="text-3xl font-semibold mb-3 text-[#00FFFF]">{feature.title}</h3>
+              <p className="text-white">{feature.description}</p>
+              <div className="mt-1 w-full flex justify-center">
                 <Button
                   variant="outline"
                   className="w-fit px-6 py-2
-                           bg-gray-900 bg-opacity-30 backdrop-filter backdrop-blur-md text-white border border-[#00FFFF] border-opacity-60 rounded-md shadow-lg
-                           hover:bg-[#00FFFF] hover:shadow-[0_0_20px_rgba(0,255,255,0.6)] hover:border-[#00FFFF] transform hover:scale-105 transition-all duration-300 ease-in-out"
+                             bg-gray-900 bg-opacity-30 backdrop-filter backdrop-blur-md text-white border border-[#00FFFF] border-opacity-60  shadow-lg
+                             hover:bg-[#00FFFF] hover:text-black hover:shadow-[0_0_20px_rgba(0,255,255,0.6)] hover:border-[#00FFFF] transform hover:scale-105 transition-all duration-300 ease-in-out"
                   tabIndex={-1}
                 >
                   {feature.buttonText}
@@ -240,7 +240,7 @@ const IndustryTrendsSection = () => {
   ];
 
   return (
-    <div className={`mt-20 flex flex-col items-center justify-center glass-box p-10 rounded-2xl shadow-2xl border border-[#00FFFF] border-opacity-60 max-w-2xl mx-auto`}>
+    <div className={`mt-20 flex flex-col items-center justify-center glass-box p-10 rounded-2xl shadow-2xl border border-[#00FFFF] border-opacity-60 max-w-2xl mx-auto `}>
       <div className="flex items-center mb-4">
         <BarChart2 className="h-10 w-10 text-[#00FFFF] mr-3" />
         <h3 className="text-3xl font-bold text-[#00FFFF]">Industry Trends & Insights</h3>

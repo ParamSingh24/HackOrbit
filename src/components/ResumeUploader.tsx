@@ -117,7 +117,7 @@ const ResumeUploader: React.FC<ResumeUploaderProps> = ({ onAnalyze, onAnalyzeTex
   };
 
   return (
-    <section id="upload" ref={sectionRef} className="py-16 bg-gradient-to-br from-gray-900 to-black text-white overflow-hidden">
+    <section id="upload" ref={sectionRef} className="py-16 bg-gradient-to-br from-gray-900 to-black text-white overflow-hidden flex items-center justify-center">
       <style jsx>{`
         @keyframes slideUp {
           from {
@@ -139,7 +139,7 @@ const ResumeUploader: React.FC<ResumeUploaderProps> = ({ onAnalyze, onAnalyzeTex
           backdrop-filter: blur(10px);
           -webkit-backdrop-filter: blur(10px);
           border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 0.5rem;
+          border-radius: 0.75rem; /* Consistent rounded-xl */
           box-shadow: 0 8px 32px 0 rgba(0, 251, 255, 0.2);
           transition: all 0.3s ease-in-out;
         }
@@ -148,20 +148,6 @@ const ResumeUploader: React.FC<ResumeUploaderProps> = ({ onAnalyze, onAnalyzeTex
           background: rgba(0, 0, 0, 0.4);
           box-shadow: 0 12px 48px 0 rgba(0, 251, 255, 0.4);
           transform: translateY(-2px);
-        }
-
-        /* Glass Bubble Styles (for inner elements like AI messages) */
-        .glass-bubble {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-            box-shadow: 0 2px 8px rgba(0, 251, 255, 0.1);
-        }
-        .glass-bubble:hover {
-            background: rgba(0, 0, 0, 0.5);
-            box-shadow: 0 4px 12px rgba(0, 251, 255, 0.2);
         }
 
         /* Glassy Button Styles */
@@ -173,16 +159,35 @@ const ResumeUploader: React.FC<ResumeUploaderProps> = ({ onAnalyze, onAnalyzeTex
           box-shadow: 0 4px 15px rgba(0, 251, 255, 0.1);
           transition: all 0.3s ease-in-out;
           color: white; /* Ensure text is white by default */
+          border-radius: 0.5rem; /* Added border-radius for buttons */
         }
 
         .glassy-button:hover {
-          background: rgba(0, 0, 0, 0.4);
-          border-color: rgba(0, 251, 255, 0.4);
-          box-shadow: 0 6px 25px rgba(0, 251, 255, 0.3);
+          background: #00FFFF; /* Blue fill-up */
+          border-color: #00FFFF; /* Cyan border on hover */
+          box-shadow: 0 0 20px rgba(0, 255, 255, 0.6); /* Blue glow effect */
+          color: black; /* Changed text color to black on hover */
           transform: translateY(-2px);
         }
+
+        /* Input field focus glow */
+        .input-glow:focus {
+            outline: none;
+            border-color: #00FBFF; /* Cyan border on focus */
+            box-shadow: 0 0 0 3px rgba(0, 251, 255, 0.5); /* Cyan glow effect on focus */
+        }
+
+        /* Separator line style */
+        .break {
+          height: 2px; /* Thin line height */
+          width: 80%; /* 80% of parent width */
+          background: linear-gradient(to right, transparent, #00FFFF, transparent); /* Cyan gradient fading out */
+          margin: 2rem auto; /* Center the line and add vertical spacing */
+          border-radius: 9999px; /* Fully rounded caps for the line */
+          box-shadow: 0 0 15px rgba(0, 255, 255, 0.4); /* Subtle glow */
+        }
       `}</style>
-      <div className="max-w-3xl mx-auto px-4">
+      <div className="max-w-3xl mx-auto px-4 flex flex-col items-center justify-center w-full">
         <div className="text-center mb-10">
           <h2 className={`text-4xl font-extrabold text-center mb-4 text-transparent bg-clip-text bg-gradient-to-r from-[#00FFFF] to-[#00CCCC] ${isVisible ? 'animate-slide-up' : 'opacity-0'}`}>
             Analyze Your Resume
@@ -193,68 +198,70 @@ const ResumeUploader: React.FC<ResumeUploaderProps> = ({ onAnalyze, onAnalyzeTex
           </p>
         </div>
 
-        <div className={`glass-box p-8 shadow-md border border-gray-800 ${isVisible ? 'animate-slide-up' : 'opacity-0'}`} style={{ animationDelay: '0.4s' }}>
-          <div className="flex flex-col md:flex-row gap-6 items-stretch justify-center">
-            {/* Upload PDF Section */}
-            <div className="flex-1 min-w-[220px]">
-              <div
-                className={`border-2 border-dashed rounded-lg mb-4 transition-colors p-8 text-center
-                  ${isDragging ? 'border-[#00FFFF] bg-gray-800 bg-opacity-40' : 'border-gray-700'}
-                  ${file ? 'bg-gray-800 bg-opacity-30' : 'bg-transparent'}`}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-              >
+        <div className={`glass-box p-8 shadow-md border border-gray-800 w-full flex flex-col items-center gap-6 ${isVisible ? 'animate-slide-up' : 'opacity-0'}`} style={{ animationDelay: '0.4s' }}>
+          {/* Upload PDF Section */}
+          <div className="flex-1 min-w-[220px] w-full">
+            <div
+              className={`border-2 border-dashed rounded-lg mb-4 transition-colors p-8 text-center
+                ${isDragging ? 'border-[#00FFFF] bg-gray-800 bg-opacity-40' : 'border-gray-700'}
+                ${file ? 'bg-gray-800 bg-opacity-30' : 'bg-transparent'}`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              <input
+                type="file"
+                accept=".pdf,.doc,.docx,.rtf,.txt"
+                className="hidden"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                disabled={isUploading}
+              />
+              <div className="flex flex-col items-center justify-center h-full">
+                <Upload className="h-10 w-10 text-[#00FFFF] mb-2" />
+                <p className="mb-2 text-gray-200">Drag & drop or <span className="text-[#00FFFF] underline cursor-pointer" onClick={() => fileInputRef.current?.click()}>browse</span> to upload PDF/DOCX/DOC/RTF/TXT</p>
+                {file && (
+                  <div className="flex items-center justify-center gap-2 mt-2">
+                    <FileText className="h-5 w-5 text-[#00FFFF]" />
+                    <span className="text-sm text-white">{file.name}</span>
+                    <button onClick={handleRemoveFile} className="ml-2 text-red-400 hover:text-red-600"><FileX className="h-4 w-4" /></button>
+                  </div>
+                )}
+              </div>
+            </div>
+            <Button
+              className="w-full glassy-button mt-2"
+              onClick={() => file && onAnalyze(file)}
+              disabled={!file || isUploading}
+            >
+              Analyze PDF
+            </Button>
+          </div>
+
+          {/* Separator */}
+          <div className="break"></div>
+
+          {/* Analyze URL Section */}
+          <div className="flex-1 min-w-[220px] flex flex-col justify-between w-full">
+            <div className="mb-4">
+              <label htmlFor="resume-url" className="block mb-2 font-medium text-white">Analyze from URL</label>
+              <div className="flex flex-col gap-2">
                 <input
-                  type="file"
-                  accept=".pdf,.doc,.docx,.rtf,.txt"
-                  className="hidden"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
+                  id="resume-url"
+                  type="url"
+                  value={analyzeUrl || ''}
+                  onChange={e => setAnalyzeUrl && setAnalyzeUrl(e.target.value)}
+                  placeholder="Paste resume file URL (PDF, DOCX, etc.)"
+                  className="flex-1 border border-gray-700 rounded px-3 py-2 bg-transparent text-white placeholder-gray-500 input-glow"
                   disabled={isUploading}
                 />
-                <div className="flex flex-col items-center justify-center h-full">
-                  <Upload className="h-10 w-10 text-[#00FFFF] mb-2" />
-                  <p className="mb-2 text-gray-200">Drag & drop or <span className="text-[#00FFFF] underline cursor-pointer" onClick={() => fileInputRef.current?.click()}>browse</span> to upload PDF/DOCX/DOC/RTF/TXT</p>
-                  {file && (
-                    <div className="flex items-center justify-center gap-2 mt-2">
-                      <FileText className="h-5 w-5 text-[#00FFFF]" />
-                      <span className="text-sm text-white">{file.name}</span>
-                      <button onClick={handleRemoveFile} className="ml-2 text-red-400 hover:text-red-600"><FileX className="h-4 w-4" /></button>
-                    </div>
-                  )}
-                </div>
-              </div>
-              <Button
-                className="w-full glassy-button mt-2"
-                onClick={() => file && onAnalyze(file)}
-                disabled={!file || isUploading}
-              >
-                Analyze PDF
-              </Button>
-            </div>
-            {/* Analyze URL Section */}
-            <div className="flex-1 min-w-[220px] flex flex-col justify-between">
-              <div className="mb-4">
-                <label htmlFor="resume-url" className="block mb-2 font-medium text-white">Analyze from URL</label>
-                <div className="flex gap-2">
-                  <input
-                    id="resume-url"
-                    type="url"
-                    value={analyzeUrl || ''}
-                    onChange={e => setAnalyzeUrl && setAnalyzeUrl(e.target.value)}
-                    placeholder="Paste resume file URL (PDF, DOCX, etc.)"
-                    className="flex-1 border border-gray-700 rounded px-3 py-2 bg-transparent text-white placeholder-gray-500 focus:outline-none focus:border-[#00FFFF] focus:shadow-[0_0_0_3px_rgba(0,255,255,0.5)] transition-all duration-200"
-                    disabled={isUploading}
-                  />
-                  <Button
-                    onClick={onAnalyzeUrl}
-                    disabled={!analyzeUrl || isUploading}
-                    className="glassy-button text-white px-4 py-2 rounded hover:text-white"
-                  >
-                    Analyze URL
-                  </Button>
-                </div>
+                <Button
+                  onClick={onAnalyzeUrl}
+                  disabled={!analyzeUrl || isUploading}
+                  className="glassy-button text-white px-4 py-2 rounded"
+                >
+                  Analyze URL
+                </Button>
               </div>
             </div>
           </div>

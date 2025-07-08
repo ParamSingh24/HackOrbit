@@ -76,6 +76,11 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
   font-family: "Lora", serif;
+   background: radial-gradient(
+            circle at 30% 70%,
+            #1E293B 0%, /* Lighter navy for center glow */
+            #0F172A 80%  /* Deep navy for edges */
+          );
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -128,4 +133,79 @@
   100% {
     background-position: 0% 50%;
   }
+}
+
+.goog-te-gadget-simple {
+  font-family:'"Lora", serif' !important;
+  background: rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(0, 255, 255, 0.3) !important; /* Cyan border with transparency */
+  box-shadow: 0 4px 15px rgba(0, 251, 255, 0.1) !important;
+  border-radius: 0.5rem !important;
+  padding: 0.5rem !important;
+  color: #E2E8F0 !important; /* Light text color */
+  transition: all 0.3s ease-in-out !important;
+  display: flex !important;
+  text-align: center !important;
+  align-items: center !important ;
+  justify-content: center !important;
+}
+.goog-te-gadget-simple img{
+  display: none !important;
+}
+.goog-te-gadget-simple span a span {
+ padding-right: 10px !important;
+}
+
+
+.goog-te-gadget-simple span
+.goog-te-gadget-simple:hover {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border-color: rgba(0, 251, 255, 0.4) !important;
+  box-shadow: 0 6px 25px rgba(0, 251, 255, 0.3) !important;
+}
+
+/* WebKit-based browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 14px;
+}
+
+::-webkit-scrollbar-track {
+  background: linear-gradient(
+    to bottom,
+    rgba(53, 245, 255, 0.6),
+    rgba(87, 138, 255, 0.3)
+  );
+  backdrop-filter: blur(8px);
+  border-left: 1px solid rgba(1, 250, 251, 1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    to bottom,
+    rgb(0, 255, 255),
+    rgb(0, 213, 255)
+  );
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 0 6px rgba(1, 250, 251, 0.3);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    to bottom,
+    rgba(1, 250, 251, 1),
+    rgba(0, 212, 255, 1)
+  );
+  box-shadow: 0 0 10px rgba(1, 250, 251, 1);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thick;
+  scrollbar-color: #04e5e5 #0e1520;
+   cursor: url('/src/components/ui/PNG.png') 16 16, auto !important;
 }
