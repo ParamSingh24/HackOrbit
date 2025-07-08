@@ -21,11 +21,12 @@ const Hero = () => {
           );
           /* Fallback for browsers that don't support radial-gradient or for initial load */
           background-color: #0A1128;
-          min-height: 100vh; /* Ensure it covers full viewport height */
+          min-height: 80vh; /* Ensure it covers full viewport height */
           display: flex;
           align-items: center; /* Center content vertically */
           justify-content: center; /* Center content horizontally */
           overflow: hidden; /* Hide any overflow from animations */
+          perspective: 1000px; /* Added perspective for 3D effect */
         }
 
         /* Keyframe for title animation - Arriving from left */
@@ -55,14 +56,16 @@ const Hero = () => {
           border-radius: 0.5rem; /* Matches Tailwind's rounded-lg */
           /* Cyan glow shadow */
           box-shadow: 0 8px 32px 0 rgba(0, 251, 255, 0.2); /* Cyan shadow with opacity */
-          transition: all 0.3s ease-in-out; /* Smooth transition for hover effects */
+          transition: all 0.8s ease-in-out; /* Increased transition duration for smoother rotation */
+          transform-style: preserve-3d; /* Preserve 3D transformations for children */
+          transform-origin: right center; /* Set transform origin to right center for rotation effect */
         }
 
         .glass-box:hover {
           background: rgba(0, 0, 0, 0.4); /* Slightly less transparent on hover */
           /* Stronger cyan glow shadow on hover */
           box-shadow: 0 12px 48px 0 rgba(0, 251, 255, 0.4); /* More intense cyan glow */
-          transform: translateY(-2px); /* Subtle lift effect on hover */
+          transform: translateY(-2px) rotateY(-45deg); /* Increased rotation for better visibility */
         }
 
         /* Glass Bubble Styles (for inner elements like AI messages) */

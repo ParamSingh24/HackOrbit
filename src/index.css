@@ -75,15 +75,17 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Inter', sans-serif;
+  font-family: "Lora", serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Inter', sans-serif;
+     font-family: "Lora", serif;
     @apply font-medium tracking-tight;
   }
 }
-
+ h1, h2{
+  padding-bottom: 10px;
+ }
 .gradient-text {
   @apply bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent;
 }

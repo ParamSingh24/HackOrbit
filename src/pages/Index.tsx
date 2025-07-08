@@ -276,7 +276,7 @@ const Index = () => {
 
         <Features />
 
-        <div id="upload" className="py-16 bg-gradient-to-br from-gray-900 to-black">
+        <div id="upload" className="py-16 bg-gradient-to-br from-gray-900 to-black border-t border-[#008080]">
           <div className="container mx-auto px-4">
             {!showAnalysis ? (
               <>

@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Button } from "@/components/ui/button";
+import { MessageSquare, X, Send } from 'lucide-react'; // Using MessageSquare for chatbot icon
+import ReactMarkdown from 'react-markdown'; // Import react-markdown
 
 const API_KEY = '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';
 const API_URL = 'https://api.perplexity.ai/chat/completions';
@@ -14,7 +17,41 @@ const Chatbot: React.FC = () => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false); // Controls the visual open/close state for transitions
+  const [modalVisible, setModalVisible] = useState(false); // Controls actual rendering after transition
+  const messagesEndRef = useRef<HTMLDivElement>(null); // Ref for auto-scrolling messages
+
+  // Effect to handle modal visibility for smooth transitions
+  useEffect(() => {
+    if (open) {
+      setModalVisible(true); // Show modal immediately when 'open' is true
+    } else {
+      // Hide modal after transition completes when 'open' is false
+      const timer = setTimeout(() => setModalVisible(false), 300); // Match transition duration
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
+
+  // Auto-scroll to the latest message
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, loading]);
+
+  // Close chat when clicking outside the chat window
+  useEffect(() => {
+    if (!modalVisible) return; // Only add listener if modal is potentially visible
+    const handleClick = (e: MouseEvent) => {
+      const chat = document.getElementById('chatbot-modal');
+      const chatbotButton = document.getElementById('chatbot-button');
+      if (chat && !chat.contains(e.target as Node) && chatbotButton && !chatbotButton.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [modalVisible]); // Depend on modalVisible to add/remove listener
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -50,100 +87,203 @@ const Chatbot: React.FC = () => {
     if (e.key === 'Enter') sendMessage();
   };
 
-  // Close chat when clicking outside the chat window
-  React.useEffect(() => {
-    if (!open) return;
-    const handleClick = (e: MouseEvent) => {
-      const chat = document.getElementById('chatbot-modal');
-      if (chat && !chat.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
-  }, [open]);
-
   return (
     <>
+      <style jsx>{`
+        /* Glass Box Styles */
+        .glass-box {
+          background: rgba(0, 0, 0, 0.3);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 0.75rem; /* Rounded-xl */
+          box-shadow: 0 8px 32px 0 rgba(0, 251, 255, 0.2);
+          transition: all 0.3s ease-in-out;
+        }
+
+        /* Glass Bubble Styles (for inner elements like AI messages) */
+        .glass-bubble {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            box-shadow: 0 2px 8px rgba(0, 251, 255, 0.1);
+        }
+        .glass-bubble:hover {
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 12px rgba(0, 251, 255, 0.2);
+        }
+
+        /* Glassy Button Styles */
+        .glassy-button {
+          background: rgba(0, 0, 0, 0.2);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          box-shadow: 0 4px 15px rgba(0, 251, 255, 0.1);
+          transition: all 0.3s ease-in-out;
+          color: white; /* Ensure text is white by default */
+        }
+
+        .glassy-button:hover {
+          background: rgba(0, 0, 0, 0.4);
+          border-color: rgba(0, 251, 255, 0.4);
+          box-shadow: 0 6px 25px rgba(0, 251, 255, 0.3);
+          transform: translateY(-2px);
+        }
+
+        /* Input field focus glow */
+        .input-glow:focus {
+            outline: none;
+            border-color: #00FBFF; /* Cyan border on focus */
+            box-shadow: 0 0 0 3px rgba(0, 251, 255, 0.5); /* Cyan glow effect on focus */
+        }
+
+        /* User message bubble specific style */
+        .user-message {
+          background-color: rgba(0, 191, 255, 0.2); /* Light cyan transparent */
+          border-color: rgba(0, 191, 255, 0.3);
+          color: white;
+          border-radius: 0.75rem 0.25rem 0.75rem 0.75rem; /* Rounded-xl top-left, rounded-sm top-right, rounded-xl bottom-left, rounded-xl bottom-right */
+        }
+
+        /* Assistant message bubble specific style */
+        .assistant-message {
+          background-color: rgba(128, 128, 128, 0.2); /* Grey transparent */
+          border-color: rgba(128, 128, 128, 0.3);
+          color: white;
+          border-radius: 0.25rem 0.75rem 0.75rem 0.75rem; /* Rounded-sm top-left, rounded-xl top-right, rounded-xl bottom-left, rounded-xl bottom-right */
+        }
+
+        /* Chatbot Modal Transition Styles */
+        .chatbot-modal-transition {
+          transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        .chatbot-modal-enter {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        .chatbot-modal-enter-active {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        .chatbot-modal-exit {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        .chatbot-modal-exit-active {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+
+        /* Hide scrollbar for Webkit browsers */
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+
+        /* Hide scrollbar for Firefox */
+        .hide-scrollbar {
+          scrollbar-width: none; /* Firefox */
+        }
+      `}</style>
+
       {/* Floating Chatbot Icon Button */}
       <button
+        id="chatbot-button"
         aria-label="Open chatbot"
         onClick={() => setOpen(true)}
-        style={{
-          position: 'fixed',
-          bottom: 24,
-          right: 24,
-          zIndex: 1000,
-          background: '#007bff',
-          border: 'none',
-          borderRadius: '50%',
-          width: 56,
-          height: 56,
-          boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-          display: open ? 'none' : 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-        }}
+        className="fixed bottom-6 right-6 z-[1000] bg-gradient-to-r from-[#00FFFF] to-[#00CCCC]
+                   rounded-full w-14 h-14 flex items-center justify-center cursor-pointer
+                   shadow-lg transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl
+                   focus:outline-none focus:ring-2 focus:ring-[#00FFFF] focus:ring-opacity-75"
+        style={{ display: open ? 'none' : 'flex' }} // Hide button when modal is open
       >
-        {/* Simple chat bubble SVG */}
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <MessageSquare size={28} className="text-white" />
       </button>
 
       {/* Chatbot Modal/Popover */}
-      {open && (
+      {modalVisible && (
         <div
           id="chatbot-modal"
-          style={{
-            position: 'fixed',
-            bottom: 90,
-            right: 24,
-            zIndex: 1001,
-            width: 360,
-            maxWidth: '90vw',
-            background: '#fff',
-            border: '1px solid #ddd',
-            borderRadius: 12,
-            boxShadow: '0 4px 24px rgba(0,0,0,0.18)',
-            padding: 0,
-            display: 'flex',
-            flexDirection: 'column',
-          }}
+          className={`
+            fixed bottom-24 right-6 z-[1001] w-[360px] max-w-[90vw]
+            flex flex-col
+            glass-box
+            chatbot-modal-transition
+            ${open ? 'chatbot-modal-enter-active' : 'chatbot-modal-exit-active'}
+          `}
+          // The 'pointer-events-none' should only be active when fully hidden,
+          // but for simplicity with pure CSS transitions, we rely on opacity.
+          // If interaction is needed during fade-out, a more complex state management
+          // or a library like react-transition-group would be needed.
+          style={{ pointerEvents: open ? 'auto' : 'none' }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderBottom: '1px solid #eee', background: '#f7f7f7', borderTopLeftRadius: 12, borderTopRightRadius: 12 }}>
-            <span style={{ fontWeight: 600 }}>Chatbot</span>
-            <button onClick={() => setOpen(false)} aria-label="Close chatbot" style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#888' }}>&times;</button>
+          {/* Modal Header */}
+          <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-gray-900 bg-opacity-40 rounded-t-xl">
+            <span className="font-semibold text-white text-lg">MITS CareerBoost AI</span>
+            <Button
+              onClick={() => setOpen(false)}
+              aria-label="Close chatbot"
+              variant="ghost"
+              size="icon"
+              className="text-gray-400 hover:text-white hover:bg-transparent transition-colors duration-200"
+            >
+              <X size={20} />
+            </Button>
           </div>
-          <div style={{ minHeight: 200, maxHeight: 300, overflowY: 'auto', marginBottom: 0, background: '#f9f9f9', padding: 12, borderRadius: 0, flex: 1 }}>
+
+          {/* Message Area */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-900 bg-opacity-20 rounded-b-xl min-h-[200px] max-h-[300px] hide-scrollbar">
             {messages.map((msg, idx) => (
-              <div key={idx} style={{ textAlign: msg.role === 'user' ? 'right' : 'left', margin: '6px 0' }}>
-                <span style={{ fontWeight: msg.role === 'user' ? 600 : 400 }}>
-                  {msg.role === 'user' ? 'You' : 'Bot'}:
-                </span> {msg.content}
+              <div
+                key={idx}
+                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div
+                  className={`p-3 max-w-[80%] text-sm border glass-bubble
+                    ${msg.role === 'user' ? 'user-message' : 'assistant-message'}`}
+                >
+                  <ReactMarkdown>{msg.content}</ReactMarkdown> {/* Render markdown content */}
+                </div>
               </div>
             ))}
-            {loading && <div>Bot is typing...</div>}
+            {loading && (
+              <div className="flex justify-start">
+                <div className="p-3 max-w-[80%] text-sm border glass-bubble assistant-message">
+                  Bot is typing...
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} /> {/* For auto-scrolling */}
           </div>
-          <div style={{ display: 'flex', gap: 8, padding: 12, borderTop: '1px solid #eee', background: '#fafbfc', borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }}>
+
+          {/* Input Area */}
+          <div className="flex gap-2 p-4 border-t border-gray-700 bg-gray-900 bg-opacity-40 rounded-b-xl">
             <input
               type="text"
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={handleInputKeyDown}
               placeholder="Type your message..."
-              style={{ flex: 1, padding: 8, borderRadius: 4, border: '1px solid #ccc' }}
+              className="flex-1 p-3 rounded-lg border border-gray-700 bg-transparent text-white placeholder-gray-500
+                         focus:outline-none input-glow transition-all duration-200"
               disabled={loading}
               autoFocus
             />
-            <button onClick={sendMessage} disabled={loading || !input.trim()} style={{ padding: '8px 16px', borderRadius: 4, background: '#007bff', color: '#fff', border: 'none' }}>
-              Send
-            </button>
+            <Button
+              onClick={sendMessage}
+              disabled={loading || !input.trim()}
+              className="glassy-button text-white px-4 py-2 rounded-lg flex items-center justify-center"
+            >
+              <Send size={20} />
+            </Button>
           </div>
-          {error && <div style={{ color: 'red', margin: '8px 16px' }}>{error}</div>}
+          {error && <div className="text-red-400 text-sm mt-2 text-center">{error}</div>}
         </div>
       )}
     </>
   );
 };
 
-export default Chatbot; 
+export default Chatbot;
