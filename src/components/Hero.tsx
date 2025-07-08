@@ -1,12 +1,23 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Upload, BarChart } from 'lucide-react';
+import { useChatbot } from "@/hooks/useChatbot";
 
 const Hero = () => {
   const scrollToUpload = () => {
     const uploadSection = document.getElementById('upload');
     uploadSection?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  const {
+    messages,
+    input,
+    setInput,
+    loading,
+    error,
+    sendMessage,
+    messagesEndRef,
+  } = useChatbot();
 
   return (
     <>
@@ -144,8 +155,12 @@ const Hero = () => {
               {/* Job Seekers Count - Lighter Gray text */}
               <div className="mt-10 flex items-center text-sm text-gray-400">
                 <div className="flex -space-x-2 mr-3">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={i} className="w-6 h-6 rounded-full bg-gray-700 border border-gray-600 transition-colors duration-300" />
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                    <div
+                      key={i}
+                      className="w-6 h-6 rounded-full bg-gray-700 border-2 border-white shadow-sm"
+                      style={{ boxShadow: '0 0 0 2px #0F172A' }}
+                    />
                   ))}
                 </div>
                 <span>3,500+ job seekers already using CareerBoost</span>
@@ -162,30 +177,34 @@ const Hero = () => {
                 <span className="text-sm text-gray-300 ml-2">Resume Analysis</span>
               </div>
 
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3">
-                  {/* AI Bubble Icon - Dark background, white text */}
-                  <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-white">
-                    <span className="text-xs">AI</span>
-                  </div>
-                  {/* AI Message Bubbles - Glass Bubble style and light text color */}
-                  <div className="glass-bubble rounded-lg p-3 text-sm max-w-sm text-gray-200">
-                    I've analyzed your resume. Here are 3 key improvements to increase your interview chances by 65%.
-                  </div>
-                </div>
-
-                <div className="glass-bubble rounded-lg p-3 text-sm text-gray-200">
-                  <div className="font-medium">Quantify your achievements with specific metrics</div>
-                </div>
-
-                <div className="glass-bubble rounded-lg p-3 text-sm text-gray-200">
-                  <div className="font-medium">Add key industry keywords to pass ATS systems</div>
-                </div>
-
-                <div className="glass-bubble rounded-lg p-3 text-sm text-gray-200">
-                  <div className="font-medium">Highlight your leadership experience more prominently</div>
-                </div>
-
+              <div className="space-y-4 max-h-72 overflow-y-auto pr-2">
+                {messages.length === 0 && (
+                  <>
+                    <div className="flex items-start space-x-3">
+                      {/* AI Bubble Icon - Dark background, white text */}
+                      <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-white">
+                        <span className="text-xs">AI</span>
+                      </div>
+                      {/* AI Message Bubbles - Glass Bubble style and light text color */}
+                      <div className="glass-bubble rounded-lg p-3 text-sm max-w-sm text-gray-200">
+                        I've analyzed your resume. Here are 3 key improvements to increase your interview chances by 65%.
+                      </div>
+                    </div>
+                    <div className="glass-bubble rounded-lg p-3 text-sm text-gray-200">
+                      <div className="font-medium">Quantify your achievements with specific metrics</div>
+                    </div>
+                    <div className="glass-bubble rounded-lg p-3 text-sm text-gray-200">
+                      <div className="font-medium">Add key industry keywords to pass ATS systems</div>
+                    </div>
+                    <div className="glass-bubble rounded-lg p-3 text-sm text-gray-200">
+                      <div className="font-medium">Highlight your leadership experience more prominently</div>
+                    </div>
+                  </>
+                )}
+                {messages.map((msg, idx) => (
+                  <div key={idx} className={`glass-bubble rounded-lg p-3 text-sm max-w-sm text-gray-200 ${msg.role === 'user' ? 'user-message' : 'assistant-message'}`}>{msg.content}</div>
+                ))}
+                <div ref={messagesEndRef} />
                 <div className="relative">
                   {/* Input field - Transparent background, light text, darker border, with focus glow */}
                   <input
@@ -193,9 +212,30 @@ const Hero = () => {
                     placeholder="Ask follow-up questions..."
                     className="w-full p-3 pr-10 border border-gray-700 rounded-lg text-sm bg-transparent
                                  text-gray-200 placeholder-gray-500 input-glow" /* Added input-glow class */
+                    value={input}
+                    onChange={e => setInput(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        sendMessage();
+                      }
+                    }}
+                    disabled={loading}
                   />
-                  <ArrowRight className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Button
+                    size="icon"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 glassy-button"
+                    onClick={e => {
+                      e.preventDefault();
+                      sendMessage();
+                    }}
+                    disabled={loading || !input.trim()}
+                    type="button"
+                  >
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
                 </div>
+                {error && <div className="text-red-400 text-xs mt-2">{error}</div>}
               </div>
             </div>
           </div>

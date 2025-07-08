@@ -83,17 +83,15 @@ const Header = () => {
             </div>
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
-              <a href="#" className="nav-link">Home</a>
-              <a href="#" className="nav-link">Features</a>
-              <a href="#" className="nav-link">How it Works</a>
+              <a href="#" className="nav-link" onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setIsMenuOpen(false); }}>Home</a>
+              <a href="#features" className="nav-link" onClick={() => { document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' }); setIsMenuOpen(false); }}>Features</a>
               <button
                 onClick={scrollToPricing}
                 className={`nav-link ${activeSection === 'pricing' ? 'active' : ''}`}
               >
                 Pricing
               </button>
-              <a href="#" className="nav-link">About</a>
-              <a href="#" className="nav-link">Contact</a>
+              <a href="#footer" className="nav-link" onClick={() => { document.getElementById('footer')?.scrollIntoView({ behavior: 'smooth' }); setIsMenuOpen(false); }}>Contact</a>
             </nav>
             {/* Desktop CTA Buttons */}
             <div className="hidden md:flex items-center space-x-4">
@@ -126,17 +124,15 @@ const Header = () => {
           {isMenuOpen && (
             <div className="md:hidden absolute top-full left-4 right-4 mt-2 mobile-menu p-4">
               <nav className="flex flex-col space-y-4">
-                <a href="#" className="nav-link">Home</a>
-                <a href="#" className="nav-link">Features</a>
-                <a href="#" className="nav-link">How it Works</a>
+                <a href="#" className="nav-link" onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setIsMenuOpen(false); }}>Home</a>
+                <a href="#features" className="nav-link" onClick={() => { document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' }); setIsMenuOpen(false); }}>Features</a>
                 <button
                   onClick={scrollToPricing}
                   className={`nav-link text-left ${activeSection === 'pricing' ? 'active' : ''}`}
                 >
                   Pricing
                 </button>
-                <a href="#" className="nav-link">About</a>
-                <a href="#" className="nav-link">Contact</a>
+                <a href="#footer" className="nav-link" onClick={() => { document.getElementById('footer')?.scrollIntoView({ behavior: 'smooth' }); setIsMenuOpen(false); }}>Contact</a>
                 <div className="flex flex-col space-y-2 pt-4 border-t border-gray-700">
                   <Button
                     variant="outline"

@@ -12,6 +12,7 @@ import LearningPaths from '@/components/LearningPaths';
 import Pricing from '@/components/Pricing';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
+import { FileText, Clock, BarChart2, ClipboardList, Mail, MessageSquare } from 'lucide-react';
 
 // Mock data for analysis results
 const mockAnalysisData = {
@@ -96,6 +97,8 @@ const Index = () => {
   const [emailLoading, setEmailLoading] = useState(false);
   const [generatedEmail, setGeneratedEmail] = useState('');
   const outreachSectionRef = useRef<HTMLDivElement>(null);
+  const storyRef = useRef<HTMLDivElement>(null);
+  const [showStory, setShowStory] = useState(false);
 
   const handleAnalyze = async (file: File) => {
     setIsUploading(true);
@@ -280,63 +283,72 @@ const Index = () => {
     }
   };
 
+  // Add handler for Hero's 'See how it works' button
+  const handleSeeHowItWorks = () => {
+    setShowStory(true);
+  };
+
   return (
-    <div className="flex flex-col min-h-screen pt-16 bg-gradient-to-br from-gray-900 to-black text-white">
-      <style jsx>{`
-        /* Glass Box Styles */
-        .glass-box {
-          background: rgba(0, 0, 0, 0.3);
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 0.5rem;
-          box-shadow: 0 8px 32px 0 rgba(0, 251, 255, 0.2);
-          transition: all 0.3s ease-in-out;
-        }
-
-        .glass-box:hover {
-          background: rgba(0, 0, 0, 0.4);
-          box-shadow: 0 12px 48px 0 rgba(0, 251, 255, 0.4);
-          transform: translateY(-2px);
-        }
-
-        /* Glass Bubble Styles (for inner elements like AI messages) */
-        .glass-bubble {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-            box-shadow: 0 2px 8px rgba(0, 251, 255, 0.1);
-        }
-        .glass-bubble:hover {
-            background: rgba(0, 0, 0, 0.5);
-            box-shadow: 0 4px 12px rgba(0, 251, 255, 0.2);
-        }
-
-        /* Glassy Button Styles */
-        .glassy-button {
-          background: rgba(0, 0, 0, 0.2);
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
-          border: 1px solid rgba(255, 255, 255, 0.15);
-          box-shadow: 0 4px 15px rgba(0, 251, 255, 0.1);
-          transition: all 0.3s ease-in-out;
-          color: white; /* Ensure text is white by default */
-        }
-
-        .glassy-button:hover {
-          background: rgba(0, 0, 0, 0.4);
-          border-color: rgba(0, 251, 255, 0.4);
-          box-shadow: 0 6px 25px rgba(0, 251, 255, 0.3);
-          transform: translateY(-2px);
-        }
-      `}</style>
+    <>
       <Header />
-
+      {/* Updated landing intro */}
+      <div className="bg-gradient-to-br from-gray-900 to-black text-white py-8 border-b border-[#008080]">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-3xl md:text-4xl font-extrabold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-[#00FFFF] to-[#00CCCC]">MITS CareerBoost</h1>
+          <p className="text-lg md:text-xl mb-4">Made for the HackOrbit hackathon, MITS CareerBoost is designed to help students and job seekers supercharge their careers with AI-powered tools, resume analysis, and personalized learning paths.</p>
+          <p className="text-base text-gray-300 max-w-2xl mx-auto">Our mission is to empower everyone to become the best-fit candidate for their dream job by providing actionable insights, upskilling recommendations, and a seamless job application experience—all in one place.</p>
+        </div>
+      </div>
+      {/* Hero with see how it works handler */}
+      <Hero onSeeHowItWorks={handleSeeHowItWorks} />
+      {/* Story Modal Overlay */}
+      {showStory && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80">
+          <div className="relative bg-gradient-to-br from-gray-900 to-black text-white rounded-2xl shadow-2xl p-8 max-w-5xl w-full mx-4 border border-[#00FFFF]">
+            <button
+              className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-bold"
+              onClick={() => setShowStory(false)}
+              aria-label="Close story"
+            >
+              &times;
+            </button>
+            <h2 className="text-4xl font-extrabold text-center mb-8 text-transparent bg-clip-text bg-gradient-to-r from-[#00FFFF] to-[#00CCCC]">How MITS CareerBoost Works</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
+              <div className="glass-box flex flex-col items-center text-center p-6 rounded-xl shadow-2xl border border-gray-700 border-opacity-60 min-h-[340px]">
+                <FileText className="h-10 w-10 text-[#00FFFF] mb-4" />
+                <h3 className="text-2xl font-semibold mb-3 text-[#00FFFF]">1. Upload & Analyze Resume</h3>
+                <p className="text-white mb-4">Easily upload your resume and get instant, AI-powered feedback on strengths, weaknesses, and ATS compatibility.</p>
+              </div>
+              <div className="glass-box flex flex-col items-center text-center p-6 rounded-xl shadow-2xl border border-gray-700 border-opacity-60 min-h-[340px]">
+                <Clock className="h-10 w-10 text-[#00FFFF] mb-4" />
+                <h3 className="text-2xl font-semibold mb-3 text-[#00FFFF]">2. Discover Skill Gaps</h3>
+                <p className="text-white mb-4">See which skills you’re missing for your target roles and get personalized recommendations for improvement.</p>
+              </div>
+              <div className="glass-box flex flex-col items-center text-center p-6 rounded-xl shadow-2xl border border-gray-700 border-opacity-60 min-h-[340px]">
+                <BarChart2 className="h-10 w-10 text-[#00FFFF] mb-4" />
+                <h3 className="text-2xl font-semibold mb-3 text-[#00FFFF]">3. Explore Learning Paths</h3>
+                <p className="text-white mb-4">Access curated courses and roadmaps to upskill efficiently and become a top candidate in your field.</p>
+              </div>
+              <div className="glass-box flex flex-col items-center text-center p-6 rounded-xl shadow-2xl border border-gray-700 border-opacity-60 min-h-[340px]">
+                <ClipboardList className="h-10 w-10 text-[#00FFFF] mb-4" />
+                <h3 className="text-2xl font-semibold mb-3 text-[#00FFFF]">4. Track Applications</h3>
+                <p className="text-white mb-4">Keep all your job applications, interviews, and follow-ups organized in one dashboard.</p>
+              </div>
+              <div className="glass-box flex flex-col items-center text-center p-6 rounded-xl shadow-2xl border border-gray-700 border-opacity-60 min-h-[340px]">
+                <Mail className="h-10 w-10 text-[#00FFFF] mb-4" />
+                <h3 className="text-2xl font-semibold mb-3 text-[#00FFFF]">5. Smart Email Outreach</h3>
+                <p className="text-white mb-4">Send personalized emails to recruiters and hiring managers with AI-generated content and resume attachments.</p>
+              </div>
+              <div className="glass-box flex flex-col items-center text-center p-6 rounded-xl shadow-2xl border border-gray-700 border-opacity-60 min-h-[340px]">
+                <MessageSquare className="h-10 w-10 text-[#00FFFF] mb-4" />
+                <h3 className="text-2xl font-semibold mb-3 text-[#00FFFF]">6. Get AI Career Coaching</h3>
+                <p className="text-white mb-4">Chat with our AI Career Coach for instant advice, interview tips, and personalized feedback on your career journey.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <main className="flex-grow">
-        <Hero />
-
         <Features
           onEmailOutreachLearnMore={handleEmailOutreachLearnMore}
           onCareerCoachingLearnMore={() => {
@@ -436,7 +448,7 @@ const Index = () => {
       </main>
 
       <Footer />
-    </div>
+    </>
   );
 };
 

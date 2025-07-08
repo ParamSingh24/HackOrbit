@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { MessageSquare, X, Send } from 'lucide-react'; // Using MessageSquare for chatbot icon
 import ReactMarkdown from 'react-markdown'; // Import react-markdown
+import { useChatbot } from "@/hooks/useChatbot";
 
 const API_KEY = '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';
 const API_URL = 'https://api.perplexity.ai/chat/completions';
@@ -13,13 +14,17 @@ interface Message {
 }
 
 const Chatbot: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    messages,
+    input,
+    setInput,
+    loading,
+    error,
+    sendMessage,
+    messagesEndRef,
+  } = useChatbot();
   const [open, setOpen] = useState(false); // Controls the visual open/close state for transitions
   const [modalVisible, setModalVisible] = useState(false); // Controls actual rendering after transition
-  const messagesEndRef = useRef<HTMLDivElement>(null); // Ref for auto-scrolling messages
 
   // Effect to handle modal visibility for smooth transitions
   useEffect(() => {
@@ -52,36 +57,6 @@ const Chatbot: React.FC = () => {
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, [modalVisible]); // Depend on modalVisible to add/remove listener
-
-  const sendMessage = async () => {
-    if (!input.trim()) return;
-    const newMessages = [...messages, { role: 'user', content: input }];
-    setMessages(newMessages);
-    setInput('');
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: MODEL,
-          messages: newMessages.map(m => ({ role: m.role, content: m.content })),
-        }),
-      });
-      if (!response.ok) throw new Error('API error');
-      const data = await response.json();
-      const assistantMessage = data.choices?.[0]?.message?.content || 'No response';
-      setMessages([...newMessages, { role: 'assistant', content: assistantMessage }]);
-    } catch (err: any) {
-      setError('Failed to get response.');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') sendMessage();
