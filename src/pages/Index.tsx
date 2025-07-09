@@ -227,10 +227,8 @@ const Index = () => {
 
   // Email Outreach logic
   const handleEmailOutreach = async () => {
-    let subject = 'Job Opportunity';
-    let body = '';
-    let subject = 'Job Opportunity';
-    let body = '';
+    let emailSubject = 'Job Opportunity';
+    let emailBody = '';
     if (!analysisData) {
       toast.error('No analysis data available.');
       return;
@@ -257,14 +255,13 @@ const Index = () => {
       const data = await res.json();
       const emailText = data.choices?.[0]?.message?.content || 'Could not generate email.';
       setGeneratedEmail(emailText);
-      
       // Extract subject and body
-      let emailSubject = 'Job Opportunity';
-      let body = emailText;
+      emailSubject = 'Job Opportunity';
+      emailBody = emailText;
       const subjectMatch = emailText.match(/^Subject:(.*)$/im);
       if (subjectMatch) {
         emailSubject = subjectMatch[1].trim();
-        body = emailText.replace(/^Subject:.*$/im, '').trim();
+        emailBody = emailText.replace(/^Subject:.*$/im, '').trim();
       }
       // Send email using EmailJS
       emailjs.send(
@@ -273,7 +270,7 @@ const Index = () => {
         {
           to_email: 'divyanshsingh0443@gmail.com',
           subject: emailSubject,
-          message: body
+          message: emailBody
         },
         'gOo12-T7LVpfWA2lK' // 
       ).then(
