@@ -255,21 +255,20 @@ const Index = () => {
       setGeneratedEmail(emailText);
       
       // Extract subject and body
-      let subject = 'Job Opportunity';
+      let emailSubject = 'Job Opportunity';
       let body = emailText;
       const subjectMatch = emailText.match(/^Subject:(.*)$/im);
       if (subjectMatch) {
-        subject = subjectMatch[1].trim();
+        emailSubject = subjectMatch[1].trim();
         body = emailText.replace(/^Subject:.*$/im, '').trim();
       }
-      
       // Send email using EmailJS
       emailjs.send(
         'MyGmailService', // Service ID
         'template_q4m57oj', // Template ID
         {
           to_email: 'divyanshsingh0443@gmail.com',
-          subject: subject,
+          subject: emailSubject,
           message: body
         },
         'gOo12-T7LVpfWA2lK' // 
