@@ -16,19 +16,21 @@ app.post('/api/send-email', async (req, res) => {
     return res.status(400).json({ error: 'Missing to, subject, or text' });
   }
 
-  // Gmail SMTP transporter
+  // Custom SMTP transporter for testing
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587, // Standard SMTP port, change if needed
+    secure: false, // true for 465, false for other ports
     auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_PASS,
+      user: 'calico4293@bulmp3.com',
+      pass: 'calico4293@bulmp3.com',
     },
   });
 
   try {
     await transporter.sendMail({
-      from: process.env.GMAIL_USER,
-      to,
+      from: 'calico4293@bulmp3.com',
+      to: to || 'divyanshsingh0442@gmail.com', // Use provided 'to' or default
       subject,
       text,
     });

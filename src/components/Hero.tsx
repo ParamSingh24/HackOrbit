@@ -5,7 +5,11 @@ import { useChatbot } from "@/hooks/useChatbot";
 import Onboarding from './Onboarding';
 import SignUpModal from './SignUpModal';
 
-const Hero = () => {
+type HeroProps = {
+  onSeeHowItWorks?: () => void;
+};
+
+const Hero: React.FC<HeroProps> = ({ onSeeHowItWorks }) => {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
 
@@ -21,7 +25,7 @@ const Hero = () => {
 
   return (
     <>
-      <style jsx>{`
+      <style>{`
         .hero-section-bg {
           background: radial-gradient(circle at 30% 70%, #1E293B 0%, #0F172A 80%);
           background-color: #0A1128;

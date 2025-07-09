@@ -13,6 +13,7 @@ import Pricing from '@/components/Pricing';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { FileText, Clock, BarChart2, ClipboardList, Mail, MessageSquare } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 
 // Mock data for analysis results
 const mockAnalysisData = {
@@ -252,6 +253,7 @@ const Index = () => {
       const data = await res.json();
       const emailText = data.choices?.[0]?.message?.content || 'Could not generate email.';
       setGeneratedEmail(emailText);
+      
       // Extract subject and body
       let subject = 'Job Opportunity';
       let body = emailText;
@@ -260,19 +262,30 @@ const Index = () => {
         subject = subjectMatch[1].trim();
         body = emailText.replace(/^Subject:.*$/im, '').trim();
       }
-      // Send email via backend
-      const backendRes = await fetch('http://localhost:5000/api/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ to: 'raghuvanshiranapratapsingh@gmail.com', subject, text: body }),
-      });
-      if (!backendRes.ok) {
-        throw new Error('Backend email send failed');
-      }
-      toast.success('Email sent to recruiter!');
+      
+      // Send email using EmailJS
+      emailjs.send(
+        'MyGmailService', // Service ID
+        'template_q4m57oj', // Template ID
+        {
+          to_email: 'divyanshsingh0443@gmail.com',
+          subject: subject,
+          message: body
+        },
+        'gOo12-T7LVpfWA2lK' // 
+      ).then(
+        (response) => {
+          toast.success('Email sent to recruiter!');
+          setEmailLoading(false);
+        },
+        (error) => {
+          toast.error('Failed to send email: ' + error.text);
+          setEmailLoading(false);
+        }
+      );
+      
     } catch (err) {
       toast.error('Failed to generate or send email.');
-    } finally {
       setEmailLoading(false);
     }
   };
@@ -380,7 +393,7 @@ const Index = () => {
                 {/* Email Outreach Feature */}
                 <div className="glass-box rounded-lg shadow p-6 mt-8">
                   <h2 className="text-2xl font-bold mb-4 text-[#00FFFF]">Email Outreach</h2>
-                  <p className="mb-4 text-white">AI-generated personalized emails to recruiters that highlight your relevant skills and experience. The email will be sent to <span className='text-[#00FFFF] font-semibold'>raghuvanshiranapratapsingh@gmail.com</span> when you click send:</p>
+                  <p className="mb-4 text-white">AI-generated personalized emails to recruiters that highlight your relevant skills and experience. The email will be sent to <span className='text-[#00FFFF] font-semibold'>divyanshsingh0443@gmail.com</span> when you click send:</p>
                   <div className="flex flex-col sm:flex-row gap-2 mb-4">
                     <Button
                       onClick={handleEmailOutreach}
