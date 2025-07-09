@@ -393,7 +393,7 @@ const Index = () => {
                 {/* Email Outreach Feature */}
                 <div className="glass-box rounded-lg shadow p-6 mt-8">
                   <h2 className="text-2xl font-bold mb-4 text-[#00FFFF]">Email Outreach</h2>
-                  <p className="mb-4 text-white">AI-generated personalized emails to recruiters that highlight your relevant skills and experience. The email will be sent to <span className='text-[#00FFFF] font-semibold'>divyanshsingh0443@gmail.com</span> when you click send:</p>
+                  <p className="mb-4 text-white">AI-generated personalized emails to recruiters that highlight your relevant skills and experience. The email will be sent to <span className='text-[#00FFFF] font-semibold'>raghuvanshiranapratapsingh@gmail.com</span> when you click send:</p>
                   <div className="flex flex-col sm:flex-row gap-2 mb-4">
                     <Button
                       onClick={handleEmailOutreach}
