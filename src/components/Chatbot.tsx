@@ -127,6 +127,123 @@ const Chatbot: React.FC<ChatbotProps> = ({ initialMessage, large, noBackground, 
     setSpeaking(false);
   };
 
+  const getSimpleAIResponse = (question: string): string => {
+    const q = question.toLowerCase();
+    
+    // Resume and CV related
+    if (q.includes('resume') || q.includes('cv') || q.includes('curriculum vitae')) {
+      return 'To improve your resume, focus on quantifying achievements with specific numbers, using strong action verbs, and tailoring content to each job description. Highlight relevant skills and experiences that match the role requirements.';
+    }
+    
+    // Interview preparation
+    if (q.includes('interview') || q.includes('interviewing')) {
+      return 'Prepare for interviews by practicing common questions, researching the company thoroughly, preparing STAR method examples of your achievements, and having thoughtful questions ready for the interviewer.';
+    }
+    
+    // Skills and development
+    if (q.includes('skill') || q.includes('skills') || q.includes('learn') || q.includes('learning') || q.includes('develop')) {
+      return 'Identify in-demand skills for your target role through job postings and industry research. Focus on both technical and soft skills. Consider online courses, certifications, and hands-on projects to build your expertise.';
+    }
+    
+    // Job search strategies
+    if ((q.includes('job') || q.includes('position') || q.includes('role')) && (q.includes('search') || q.includes('find') || q.includes('apply'))) {
+      return 'For a successful job search, network actively on LinkedIn and at industry events, customize each application, follow up with recruiters, and maintain a consistent personal brand across all platforms.';
+    }
+    
+    // Cover letters
+    if (q.includes('cover letter') || q.includes('coverletter') || q.includes('application letter')) {
+      return 'A great cover letter should be concise (under 300 words), tailored to the specific job and company, highlight your most relevant achievements, and explain why you\'re excited about the opportunity.';
+    }
+    
+    // LinkedIn optimization
+    if (q.includes('linkedin') || q.includes('linked in') || q.includes('profile')) {
+      return 'Optimize your LinkedIn by using a professional photo, writing a compelling headline and summary, listing key skills and experiences, and regularly sharing industry-relevant content to build your network.';
+    }
+    
+    // Career changes
+    if (q.includes('career change') || q.includes('switch career') || q.includes('new career') || q.includes('transition')) {
+      return 'For a career change, identify your transferable skills, seek out projects or courses in your new field, network with professionals in the target industry, and consider starting with entry-level positions to gain experience.';
+    }
+    
+    // Salary negotiation
+    if (q.includes('salary') || q.includes('pay') || q.includes('compensation') || q.includes('negotiate') || q.includes('money')) {
+      return 'Research market rates for your role and experience level. Practice your negotiation pitch, focus on your value and achievements, and be prepared to discuss benefits and other compensation elements beyond just salary.';
+    }
+    
+    // Networking
+    if (q.includes('network') || q.includes('networking') || q.includes('connect') || q.includes('relationship')) {
+      return 'Build your professional network by attending industry events, joining relevant online communities, reaching out to alumni, and offering value to others before asking for help. Follow up and maintain relationships.';
+    }
+    
+    // Remote work
+    if (q.includes('remote') || q.includes('work from home') || q.includes('wfh') || q.includes('telecommute')) {
+      return 'For remote work success, demonstrate strong communication skills, show you can work independently, highlight any previous remote experience, and emphasize your ability to stay organized and productive without supervision.';
+    }
+    
+    // Company research
+    if (q.includes('company') || q.includes('organization') || q.includes('employer') || q.includes('research')) {
+      return 'Research companies by reading their website, checking recent news, reviewing employee feedback on Glassdoor, understanding their mission and values, and identifying how your skills align with their needs.';
+    }
+    
+    // Application tracking
+    if (q.includes('application') || q.includes('apply') || q.includes('track') || q.includes('follow up')) {
+      return 'Track your applications in a spreadsheet or app, follow up within a week of applying, keep records of all communications, and maintain a consistent follow-up schedule without being pushy.';
+    }
+    
+    // Personal branding
+    if (q.includes('brand') || q.includes('personal brand') || q.includes('reputation') || q.includes('online presence')) {
+      return 'Build your personal brand by creating consistent messaging across platforms, sharing valuable content, engaging with industry discussions, and showcasing your expertise through thought leadership.';
+    }
+    
+    // Time management
+    if (q.includes('time') || q.includes('schedule') || q.includes('balance') || q.includes('manage')) {
+      return 'Manage your job search time by setting daily goals, prioritizing high-impact activities like networking, using productivity tools, and maintaining a structured approach to avoid burnout.';
+    }
+    
+    // Confidence and mindset
+    if (q.includes('confidence') || q.includes('nervous') || q.includes('anxiety') || q.includes('stress') || q.includes('mindset')) {
+      return 'Build confidence by practicing regularly, focusing on your achievements, preparing thoroughly, and remembering that rejection is part of the process. Celebrate small wins and maintain a growth mindset.';
+    }
+    
+    // Entry level positions
+    if (q.includes('entry level') || q.includes('entry-level') || q.includes('junior') || q.includes('first job') || q.includes('graduate')) {
+      return 'For entry-level positions, emphasize internships, projects, volunteer work, and relevant coursework. Show enthusiasm, willingness to learn, and transferable skills from academic or extracurricular activities.';
+    }
+    
+    // Industry specific
+    if (q.includes('tech') || q.includes('technology') || q.includes('software') || q.includes('programming')) {
+      return 'In tech, focus on building a strong portfolio, contributing to open source projects, staying updated with latest technologies, and demonstrating problem-solving skills through coding challenges or projects.';
+    }
+    
+    if (q.includes('marketing') || q.includes('advertising') || q.includes('brand')) {
+      return 'For marketing roles, showcase campaigns you\'ve worked on, demonstrate understanding of digital tools, show creativity through portfolio pieces, and stay updated with industry trends and platforms.';
+    }
+    
+    if (q.includes('finance') || q.includes('accounting') || q.includes('banking')) {
+      return 'In finance, emphasize analytical skills, attention to detail, relevant certifications, and understanding of financial principles. Show interest in the specific sector and demonstrate strong quantitative abilities.';
+    }
+    
+    // Fuzzy matching for common variations
+    const fuzzyMatches = {
+      'resume': ['resume', 'cv', 'curriculum vitae', 'application'],
+      'interview': ['interview', 'meeting', 'conversation', 'discussion'],
+      'skill': ['skill', 'ability', 'competency', 'expertise'],
+      'job': ['job', 'position', 'role', 'opportunity', 'career'],
+      'salary': ['salary', 'pay', 'compensation', 'income', 'wage'],
+      'network': ['network', 'connect', 'relationship', 'contact']
+    };
+    
+    // Check fuzzy matches
+    for (const [category, keywords] of Object.entries(fuzzyMatches)) {
+      if (keywords.some(keyword => q.includes(keyword))) {
+        return getSimpleAIResponse(category + ' question'); // Recursive call with the category
+      }
+    }
+    
+    // Improved fallback message
+    return "That's a great question! I'd be happy to provide guidance on this topic. To give you the most relevant advice, could you share a bit more about your current situation and specific goals? For example, are you looking for help with resumes, interviews, job searching, career changes, or something else?";
+  };
+
   // Find the latest assistant message
   const latestAssistantMsg = messages.slice().reverse().find(m => m.role === 'assistant')?.content;
 

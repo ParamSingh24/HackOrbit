@@ -291,6 +291,7 @@ const Header = () => {
               >
                 Pricing
               </button>
+              <a href="#future-scope" className="nav-link" onClick={e => { e.preventDefault(); document.getElementById('future-scope')?.scrollIntoView({ behavior: 'smooth' }); setIsMenuOpen(false); }}>Future Scope</a>
               <a href="#footer" className="nav-link" onClick={e => { e.preventDefault(); document.getElementById('footer')?.scrollIntoView({ behavior: 'smooth' }); setIsMenuOpen(false); }}>Contact</a>
             </nav>
             {/* Desktop CTA Buttons */}
@@ -341,6 +342,7 @@ const Header = () => {
                 >
                   Pricing
                 </button>
+                <a href="#future-scope" className="nav-link" onClick={e => { e.preventDefault(); document.getElementById('future-scope')?.scrollIntoView({ behavior: 'smooth' }); setIsMenuOpen(false); }}>Future Scope</a>
                 <a href="#footer" className="nav-link" onClick={e => { e.preventDefault(); document.getElementById('footer')?.scrollIntoView({ behavior: 'smooth' }); setIsMenuOpen(false); }}>Contact</a>
                 <div className="flex flex-col space-y-2 pt-4 border-t border-gray-700">
                   {user ? (

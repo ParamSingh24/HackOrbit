@@ -227,6 +227,10 @@ const Index = () => {
 
   // Email Outreach logic
   const handleEmailOutreach = async () => {
+    let subject = 'Job Opportunity';
+    let body = '';
+    let subject = 'Job Opportunity';
+    let body = '';
     if (!analysisData) {
       toast.error('No analysis data available.');
       return;

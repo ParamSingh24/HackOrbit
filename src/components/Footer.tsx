@@ -3,6 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 import SignUpModal from './SignUpModal';
 import ProfileModal from './ProfileModal';
 import { useNavigate } from 'react-router-dom';
+import FutureScope from './FutureScope';
 
 const Footer = () => {
   const sectionRef = useRef(null);
@@ -37,7 +38,9 @@ const Footer = () => {
   }, []);
 
   return (
-    <footer id="footer" ref={sectionRef} className="bg-gradient-to-br from-gray-900 to-black text-white py-12 overflow-hidden border-t border-[#008080]"> {/* Added border-t with a dark cyan color */}
+    <>
+      <FutureScope />
+      <footer id="footer" ref={sectionRef} className="bg-gradient-to-br from-gray-900 to-black text-white py-12 overflow-hidden border-t border-[#008080]"> {/* Added border-t with a dark cyan color */}
       <style jsx>{`
         @keyframes slideUp {
           from {
@@ -166,6 +169,7 @@ const Footer = () => {
       </div>
       {showSignUp && <SignUpModal onClose={() => setShowSignUp(false)} />}
     </footer>
+    </>
   );
 };
 

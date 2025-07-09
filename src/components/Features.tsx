@@ -150,7 +150,7 @@ const Features = ({ onEmailOutreachLearnMore, onCareerCoachingLearnMore }) => {
               style={{ animationDelay: `${0.3 + index * 0.1}s` }}
               onClick={() => {
                 if (feature.slug === 'resume-optimization') {
-                  navigate('/dashboard/resume-optimization');
+                  navigate('/1');
                 } else if (feature.slug === 'application-tracking') {
                   navigate('/dashboard/application-tracking');
                 } else if (feature.slug === 'skill-gap-analysis') {
@@ -159,6 +159,8 @@ const Features = ({ onEmailOutreachLearnMore, onCareerCoachingLearnMore }) => {
                   navigate('/dashboard/email-outreach');
                 } else if (feature.slug === 'ai-career-coaching') {
                   navigate('/dashboard/ai-career-coaching');
+                } else if (feature.slug === 'job-trend-analysis') {
+                  navigate('/4');
                 } else {
                   navigate(`/feature/${feature.slug}`);
                 }
