@@ -13,7 +13,15 @@ interface Message {
   content: string;
 }
 
-const Chatbot: React.FC = () => {
+interface ChatbotProps {
+  initialMessage?: string;
+  large?: boolean;
+  noBackground?: boolean;
+  openByDefault?: boolean;
+  mode?: 'dashboard' | 'modal';
+}
+
+const Chatbot: React.FC<ChatbotProps> = ({ initialMessage, large, noBackground, openByDefault, mode }) => {
   const {
     messages,
     input,
@@ -23,7 +31,7 @@ const Chatbot: React.FC = () => {
     sendMessage,
     messagesEndRef,
   } = useChatbot();
-  const [open, setOpen] = useState(false); // Controls the visual open/close state for transitions
+  const [open, setOpen] = useState(mode === 'dashboard' ? true : !!openByDefault); // Controls the visual open/close state for transitions
   const [modalVisible, setModalVisible] = useState(false); // Controls actual rendering after transition
   const [listening, setListening] = useState(false);
   const [speaking, setSpeaking] = useState(false);
@@ -61,6 +69,15 @@ const Chatbot: React.FC = () => {
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, [modalVisible]); // Depend on modalVisible to add/remove listener
+
+  // Add initial assistant message if provided
+  useEffect(() => {
+    if (initialMessage && messages.length === 0) {
+      // Directly add the assistant message to the chat
+      messages.push({ role: 'assistant', content: initialMessage });
+    }
+    // eslint-disable-next-line
+  }, []);
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') sendMessage();
@@ -212,53 +229,24 @@ const Chatbot: React.FC = () => {
         .hide-scrollbar {
           scrollbar-width: none; /* Firefox */
         }
+        .chatbot-header-title {
+          font-size: 1rem;
+          padding: 0.5rem 1rem;
+        }
+        .chatbot-large {
+          width: 100%;
+          max-width: 100vw;
+          min-width: 0;
+          margin: 0 auto;
+        }
       `}</style>
 
-      {/* Floating Chatbot Icon Button */}
-      <button
-        id="chatbot-button"
-        aria-label="Open chatbot"
-        onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 z-[1000] bg-gradient-to-r from-[#00FFFF] to-[#00CCCC]
-                   rounded-full w-14 h-14 flex items-center justify-center cursor-pointer
-                   shadow-lg transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl
-                   focus:outline-none focus:ring-2 focus:ring-[#00FFFF] focus:ring-opacity-75"
-        style={{ display: open ? 'none' : 'flex' }} // Hide button when modal is open
-      >
-        <MessageSquare size={28} className="text-white" />
-      </button>
-
-      {/* Chatbot Modal/Popover */}
-      {modalVisible && (
-        <div
-          id="chatbot-modal"
-          className={`
-            fixed bottom-24 right-6 z-[1001] w-[360px] max-w-[90vw]
-            flex flex-col
-            glass-box
-            chatbot-modal-transition
-            ${open ? 'chatbot-modal-enter-active' : 'chatbot-modal-exit-active'}
-          `}
-          // The 'pointer-events-none' should only be active when fully hidden,
-          // but for simplicity with pure CSS transitions, we rely on opacity.
-          // If interaction is needed during fade-out, a more complex state management
-          // or a library like react-transition-group would be needed.
-          style={{ pointerEvents: open ? 'auto' : 'none' }}
-        >
-          {/* Modal Header */}
+      {mode === 'dashboard' ? (
+        <div className={`glass-box ${large ? 'chatbot-large' : ''}`} style={{ width: '100%', maxWidth: '100%', minWidth: 0, margin: '0 auto' }}>
+          {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-gray-900 bg-opacity-40 rounded-t-xl">
-            <span className="font-semibold text-white text-lg">MITS CareerBoost AI</span>
-            <Button
-              onClick={() => setOpen(false)}
-              aria-label="Close chatbot"
-              variant="ghost"
-              size="icon"
-              className="text-gray-400 hover:text-white hover:bg-transparent transition-colors duration-200"
-            >
-              <X size={20} />
-            </Button>
+            <span className="font-semibold text-white chatbot-header-title">MITS CareerBoost AI</span>
           </div>
-
           {/* Message Area */}
           <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-900 bg-opacity-20 rounded-b-xl min-h-[200px] max-h-[300px] hide-scrollbar">
             {messages.map((msg, idx) => (
@@ -270,7 +258,7 @@ const Chatbot: React.FC = () => {
                   className={`p-3 max-w-[80%] text-sm border glass-bubble
                     ${msg.role === 'user' ? 'user-message' : 'assistant-message'}`}
                 >
-                  <ReactMarkdown>{msg.content}</ReactMarkdown> {/* Render markdown content */}
+                  <ReactMarkdown>{msg.content}</ReactMarkdown>
                   {/* Voice output button for assistant messages */}
                   {msg.role === 'assistant' && idx === messages.length - 1 && (
                     <div className="flex gap-2 mt-2 justify-end">
@@ -305,7 +293,6 @@ const Chatbot: React.FC = () => {
             )}
             <div ref={messagesEndRef} /> {/* For auto-scrolling */}
           </div>
-
           {/* Input Area */}
           <div className="flex gap-2 p-4 border-t border-gray-700 bg-gray-900 bg-opacity-40 rounded-b-xl">
             <input
@@ -348,6 +335,145 @@ const Chatbot: React.FC = () => {
           </div>
           {error && <div className="text-red-400 text-sm mt-2 text-center">{error}</div>}
         </div>
+      ) : (
+        <>
+          {/* Floating Chatbot Icon Button */}
+          <button
+            id="chatbot-button"
+            aria-label="Open chatbot"
+            onClick={() => setOpen(true)}
+            className="fixed bottom-6 right-6 z-[1000] bg-gradient-to-r from-[#00FFFF] to-[#00CCCC]
+                       rounded-full w-14 h-14 flex items-center justify-center cursor-pointer
+                       shadow-lg transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl
+                       focus:outline-none focus:ring-2 focus:ring-[#00FFFF] focus:ring-opacity-75"
+            style={{ display: open ? 'none' : 'flex' }} // Hide button when modal is open
+          >
+            <MessageSquare size={28} className="text-white" />
+          </button>
+
+          {/* Chatbot Modal/Popover */}
+          {modalVisible && (
+            <div
+              id="chatbot-modal"
+              className={`
+                fixed bottom-24 right-6 z-[1001] w-[360px] max-w-[90vw]
+                flex flex-col
+                glass-box
+                chatbot-modal-transition
+                ${open ? 'chatbot-modal-enter-active' : 'chatbot-modal-exit-active'}
+                ${large ? 'chatbot-large' : ''}
+              `}
+              // The 'pointer-events-none' should only be active when fully hidden,
+              // but for simplicity with pure CSS transitions, we rely on opacity.
+              // If interaction is needed during fade-out, a more complex state management
+              // or a library like react-transition-group would be needed.
+              style={{ pointerEvents: open ? 'auto' : 'none' }}
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-gray-900 bg-opacity-40 rounded-t-xl">
+                <span className="font-semibold text-white chatbot-header-title">MITS CareerBoost AI</span>
+                <Button
+                  onClick={() => setOpen(false)}
+                  aria-label="Close chatbot"
+                  variant="ghost"
+                  size="icon"
+                  className="text-gray-400 hover:text-white hover:bg-transparent transition-colors duration-200"
+                >
+                  <X size={20} />
+                </Button>
+              </div>
+
+              {/* Message Area */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-900 bg-opacity-20 rounded-b-xl min-h-[200px] max-h-[300px] hide-scrollbar">
+                {messages.map((msg, idx) => (
+                  <div
+                    key={idx}
+                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div
+                      className={`p-3 max-w-[80%] text-sm border glass-bubble
+                        ${msg.role === 'user' ? 'user-message' : 'assistant-message'}`}
+                    >
+                      <ReactMarkdown>{msg.content}</ReactMarkdown> {/* Render markdown content */}
+                      {/* Voice output button for assistant messages */}
+                      {msg.role === 'assistant' && idx === messages.length - 1 && (
+                        <div className="flex gap-2 mt-2 justify-end">
+                          {!speaking ? (
+                            <button
+                              className="text-cyan-400 hover:text-cyan-200"
+                              title="Read aloud"
+                              onClick={() => speak(msg.content)}
+                            >
+                              <Volume2 size={20} />
+                            </button>
+                          ) : (
+                            <button
+                              className="text-red-400 hover:text-red-200"
+                              title="Stop reading"
+                              onClick={stopSpeaking}
+                            >
+                              <VolumeX size={20} />
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+                {loading && (
+                  <div className="flex justify-start">
+                    <div className="p-3 max-w-[80%] text-sm border glass-bubble assistant-message">
+                      Bot is typing...
+                    </div>
+                  </div>
+                )}
+                <div ref={messagesEndRef} /> {/* For auto-scrolling */}
+              </div>
+
+              {/* Input Area */}
+              <div className="flex gap-2 p-4 border-t border-gray-700 bg-gray-900 bg-opacity-40 rounded-b-xl">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  onKeyDown={handleInputKeyDown}
+                  placeholder="Type your message..."
+                  className="flex-1 p-3 rounded-lg border border-gray-700 bg-transparent text-white placeholder-gray-500
+                             focus:outline-none input-glow transition-all duration-200"
+                  disabled={loading}
+                  autoFocus
+                />
+                <Button
+                  onClick={sendMessage}
+                  disabled={loading || !input.trim()}
+                  className="glassy-button text-white px-4 py-2 rounded-lg flex items-center justify-center"
+                >
+                  <Send size={20} />
+                </Button>
+                {/* Voice input button */}
+                {!listening ? (
+                  <button
+                    className="ml-2 text-cyan-400 hover:text-cyan-200 bg-transparent border-none outline-none"
+                    title="Start voice input"
+                    onClick={startListening}
+                    disabled={loading}
+                  >
+                    <Mic size={22} />
+                  </button>
+                ) : (
+                  <button
+                    className="ml-2 text-red-400 hover:text-red-200 bg-transparent border-none outline-none"
+                    title="Stop voice input"
+                    onClick={stopListening}
+                  >
+                    <MicOff size={22} />
+                  </button>
+                )}
+              </div>
+              {error && <div className="text-red-400 text-sm mt-2 text-center">{error}</div>}
+            </div>
+          )}
+        </>
       )}
     </>
   );

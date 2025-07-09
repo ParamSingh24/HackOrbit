@@ -148,7 +148,21 @@ const Features = ({ onEmailOutreachLearnMore, onCareerCoachingLearnMore }) => {
                            transform transition-all duration-500 ease-in-out hover:shadow-[0_0_40px_rgba(0,255,255,0.4)] hover:border-[#00FFFF]
                            ${isVisible ? 'animate-slide-up' : 'opacity-0'}`}
               style={{ animationDelay: `${0.3 + index * 0.1}s` }}
-              onClick={() => navigate(`/feature/${feature.slug}`)}
+              onClick={() => {
+                if (feature.slug === 'resume-optimization') {
+                  navigate('/dashboard/resume-optimization');
+                } else if (feature.slug === 'application-tracking') {
+                  navigate('/dashboard/application-tracking');
+                } else if (feature.slug === 'skill-gap-analysis') {
+                  navigate('/dashboard/skill-gap-analysis');
+                } else if (feature.slug === 'email-outreach') {
+                  navigate('/dashboard/email-outreach');
+                } else if (feature.slug === 'ai-career-coaching') {
+                  navigate('/dashboard/ai-career-coaching');
+                } else {
+                  navigate(`/feature/${feature.slug}`);
+                }
+              }}
             >
               <div className="mt-5 p-3 bg-gray-800 bg-opacity-60 rounded-lg w-fit shadow-inner border border-gray-700 border-opacity-50 mx-auto">
                 {feature.icon}
